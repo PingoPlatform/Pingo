@@ -30,21 +30,21 @@ Created on Thu Sep 29 14:01:24 2016
 # LEVEL 1: IMPORT AND BASIC CORRECTIONS
 ##############################################################
 # Control which levels are worked on
-LEVEL1 = 'no'
+LEVEL1 = 'yes'
 LEVEL2 = 'no'
-LEVEL3 = 'yes'
+LEVEL3 = 'no'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/KH201910/400/'
+PFAD = '/Volumes/Work/KH201910/200/'
 rekursive_directory_search = 'no'
-PREPROCESS = 'no'
+PREPROCESS = 'yes'
 FORMAT = 89  # .ALL UND .S7K FILES  work
 file_end = '.s7k'
 SS_FORMAT = 'C'  # scbw  s snippet c calib. snippet b widebeambackscatter w calibwidebeambackscatter "auto" - no option
 
 AREA = '12.10/12.1143/54.1844/54.18997'  # WESN. printed in datalist.info at the end of level1
 GENERATE_DATALIST = 'yes'
-AUTO_CLEAN_BATHY = 'no'
+AUTO_CLEAN_BATHY = 'yes'
 ATTITUDE_LAG = ''
 SELECT_SVP = ''          # mbsvpselect crashing at the moment why?? -> mbsystem bug? has to be done manually atm
 SVP = ''             #this is the manual file included in all par files

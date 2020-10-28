@@ -33,9 +33,6 @@ except:
     parser.print_help()
     sys.exit(0)
 
-
-
-
 def getfiles(ID='', PFAD='.'):
     # Gibt eine Liste mit Dateien in PFAD und der Endung IDENTIFIER aus.
     files = []
@@ -81,4 +78,3 @@ args.directory.strip("/")
 filelist = getfiles(args.wildcards, args.directory)
 
 Parallel(n_jobs=num_cores)(delayed(generate_tfw)(args.directory + '/' + file, args.scale, args.suffix) for file in tqdm(filelist))
-

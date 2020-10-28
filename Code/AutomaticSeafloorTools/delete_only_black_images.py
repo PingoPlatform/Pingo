@@ -4,7 +4,6 @@
 # coding: utf8
 '''
 #check for images that are only black and delete these images
-# white is defined for everything more than <5  on average in brightness
 '''
 import os
 import sys
@@ -53,8 +52,6 @@ def delete_black(file):
     if np.mean(img) < args.threshold:
         cmd = 'rm' +  '  ' +  args.source_directory + '/' + file
         os.system(cmd)
-    return 
+    return
 
 Parallel(n_jobs=num_cores)(delayed(delete_black)(file) for file in tqdm(filelist))
-
-

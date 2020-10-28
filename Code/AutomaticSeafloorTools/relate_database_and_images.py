@@ -169,8 +169,6 @@ if args.format == 'tfrecord':
     print("Export as tfrecord not currently implemented here...this code sits in one of the Google Colabs")
     sys,exit(0)
 
-
-
 if args.format == 'csv':
 # Reformat for usage with Tensorflow API and no longer Keras Retinanet
 

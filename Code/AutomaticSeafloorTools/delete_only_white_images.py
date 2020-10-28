@@ -4,7 +4,6 @@
 # coding: utf8
 
 #check for images that are only white and delete these images
-# white is defined for everything more than >250 on average in brightness
 
 import os
 import sys
@@ -54,4 +53,3 @@ def delete_white(file):
         os.system(cmd)
 
 Parallel(n_jobs=num_cores)(delayed(delete_white)(file) for file in tqdm(files))
-

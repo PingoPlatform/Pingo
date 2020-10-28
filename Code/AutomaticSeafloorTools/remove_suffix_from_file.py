@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
 '''
-Add suffix to filename
+Remove suffix to filename
 '''
 
 

@@ -35,7 +35,7 @@ parser.add_argument("-o","--overlap", type=int, help="number of overlap between 
 def execute_command(command):
     os.system(command)
     return
-    
+
 def getfiles(ID='', PFAD='.'):
     # Gibt eine Liste mit Dateien in PFAD und der Endung IDENTIFIER aus.
     files = []
@@ -43,8 +43,6 @@ def getfiles(ID='', PFAD='.'):
         if file.endswith(ID):
             files.append(str(file))
     return files
-
-
 
 try:
     options = parser.parse_args()
@@ -76,13 +74,13 @@ for mosaic in tqdm(files):
             print("No overlap")
             cmd = 'gdal_retile.py -ps ' + str(args.tile_size) + ' ' + str(args.tile_size) + ' -targetDir ' + \
             '"' + args.target_directory + '"' + ' ' + '"' + \
-            args.source_directory + '/' + mosaic+'"' 
+            args.source_directory + '/' + mosaic+'"'
             #os.system(cmd)
             Parallel(n_jobs=num_cores)(delayed(execute_command)(str(cmd))
                                        for file in tqdm(files))
         if args.overlap > 0:
             print("Cutting with Overlap")
-            cmd = 'gdal_retile.py -ps ' + str(args.tile_size) + ' ' + str(args.tile_size) + ' -overlap ' + str(args.overlap) + ' -targetDir ' + '"' + args.target_directory + '"' + ' ' + '"' +  args.source_directory + '/' + mosaic+'"' 
+            cmd = 'gdal_retile.py -ps ' + str(args.tile_size) + ' ' + str(args.tile_size) + ' -overlap ' + str(args.overlap) + ' -targetDir ' + '"' + args.target_directory + '"' + ' ' + '"' +  args.source_directory + '/' + mosaic+'"'
             #os.system(cmd)
             Parallel(n_jobs=num_cores)(delayed(execute_command)(str(cmd))
                                        for file in tqdm(files))
