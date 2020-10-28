@@ -6,6 +6,8 @@ Created on Thu Sep 29 14:01:24 2016
 @author: feldens
 
 
+Todo: Make the monster loop run in parallel to speed up processing
+
 Calcualtes texture parameters from a TIF image and stores as ASCII
 
 Add gridding of output files using gmt surface
