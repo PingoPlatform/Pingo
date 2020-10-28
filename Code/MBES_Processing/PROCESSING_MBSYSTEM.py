@@ -30,9 +30,9 @@ Created on Thu Sep 29 14:01:24 2016
 # LEVEL 1: IMPORT AND BASIC CORRECTIONS
 ##############################################################
 # Control which levels are worked on
-LEVEL1 = 'yes'
-LEVEL2 = 'no'
-LEVEL3 = 'no'
+LEVEL1 = 'no'
+LEVEL2 = 'yes'
+LEVEL3 = 'yes'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
 PFAD = '/Volumes/Work/KH201910/200/'   # end with /
@@ -65,11 +65,15 @@ EXPORT_ARC_CURVES = 'no'
 PROCESS_SCATTER = 'yes'  # yes is running mbbackangle
 CONSIDER_SEAFLOOR_SLOPE = ''
 AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average (yes) for complete datesaet
-SSS_ACROSS_CUT = ''
+
+
+SSS_ACROSS_CUT = 'yes'
 SSS_ACROSS_CUT_MIN = 0
-SSS_ACROSS_CUT_MAX = 75
+SSS_ACROSS_CUT_MAX = 15
 
-
+SSS_CORRECTIONS = 'yes' #applies all of the follwoing settings
+SSSWATHWIDTH = 50
+SSINTERPOLATE = 10
 ##############################################################
 # LEVEL 3: Make grid data
 ##############################################################
@@ -77,12 +81,12 @@ SSS_ACROSS_CUT_MAX = 75
 SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
 INTERPOLATION = '-C3/2'      #up to three cells are interpolated
 ## Grids
-WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
+WORK_ON_PER_FILE_BASIS = 'yes'  # Make grids i.e. for each file individually
 
 # Work for both on a per-survey and per file setting
 GENERATE_BATHY_GRIDS = 'yes'
 GENERATE_SCATTER_GRIDS = 'yes'
-SCATTER_WITH_FILTER ='yes'   #Export filtered grids
+SCATTER_WITH_FILTER ='no'   #Export filtered grids
 EXPORT_XYI_FROM_GRID = 'no'
 """
 Idea: export first pings with mblist with depth and ship speed and make an educated guess on grid size for each file
@@ -251,10 +255,10 @@ def export_grid_file(SCATTERFILE, TYPE):
 def process_scatter(FORMAT, mbfile, CONSIDER_SEAFLOOR_SLOPE):
     if CONSIDER_SEAFLOOR_SLOPE == 'yes':
         command = 'mbbackangle -I' + mbfile + ' -F' + \
-            str(FORMAT) + ' -P2000 -G2/70/70/50 -N81/80 -R45  -Q '
+            str(FORMAT) + ' -P20 -G2/70/70/50 -N81/80 -R44  -Q '
     else:
         command = 'mbbackangle -I' + mbfile + \
-            ' -F' + str(FORMAT) + ' -G2/70/70/50 -P2000 -R45 -N81/80 '
+            ' -F' + str(FORMAT) + ' -G2/70/70/50 -P20 -R45 -N81/80 '
         os.system(command)
     command = 'mbset -I' + mbfile + ' -F' + str(FORMAT) + ' PSSCORRTYPE: 1'
     os.system(command)
@@ -321,7 +325,7 @@ def execute_mbcommand(mbcommand):
     return
 
 def autoclean(mbfile, FORMAT):
-        command = 'mbclean -F' + str(FORMAT) + ' -I' + mbfile + ' -R3 -Q2 -Z'
+        command = 'mbclean -F' + str(FORMAT) + ' -I' + mbfile + ' -R3 -X5 -Q1qq -Z'
         os.system(command)
         return
 
@@ -343,7 +347,7 @@ def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FOR
             datatype = '-A4F'
             name_add = '_filtered'
         # Generate first cut sidescan mosaic and plot
-        command = 'mbm_grid ' + datatype + ' -M -P0 -G3  ' + ' ' +  SCATTER_RES + ' ' + INTERPOLATION + ' -F' + str(FORMAT) + ' -I' +file + ' ' + '-O' + file +'_sss' + name_add
+        command = 'mbm_grid ' + datatype + ' -M -Y1 -P0 -G3  ' + ' ' +  SCATTER_RES + ' ' + INTERPOLATION + ' -F' + str(FORMAT) + ' -I' +file + ' ' + '-O' + file +'_sss' + name_add
         os.system(command)
         if SCATTER_WITH_FILTER =='no':
             command = './' + file + '_sss_mbmosaic.cmd '
@@ -445,36 +449,68 @@ if LEVEL1 == 'yes':
 
     if CORRECT_HPR == 'yes':
         print('Correct HPR')
-        command = 'mbset  -PROLLBIASMODE:1 -PROLLBIAS:' + str(ROLL_CORR) + ' -PPITCHBIASMODE:1 -PPITCHBIAS:' + str(PITCH_CORR )
-        os.system(command)
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        files , _, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PROLLBIASMODE:1 -PROLLBIAS:' + str(ROLL_CORR) + ' -PPITCHBIASMODE:1 -PPITCHBIAS:' + str(PITCH_CORR)
+            os.system(command)
         DATA_TO_PROC = 'yes'
 
     if CORRECT_DRAFT == 'yes':
-        print('Correct HPR')
-        command = 'mbset -PDRAFTMODE:4 -PDRAFT:' + str(DRAFT_CORR)
-        os.system(command)
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        files , _, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PDRAFTMODE:4 -PDRAFT:' + str(DRAFT_CORR)
+            os.system(command)
         DATA_TO_PROC = 'yes'
 
     if SELECT_SVP == 'yes':
         print('Select SVP')
         #command = 'mbsvpselect -P1 -Ssvplist.mb-1'   #P1: selection to nearest in time
         #Workaround weil das mit den svpprofilen bei format 201 nicht zu gehen scheint
-        command = 'mbset -PSVPMODE:1 -PSVPFILE:' + SVP
-        os.system(command)
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        files , _, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PSVPMODE:1 -PSVPFILE:' + SVP
+            os.system(command)
         DATA_TO_PROC = 'yes'
 
     if CORRECT_TIDE == 'yes':
         print('Correcting Tide')
-        command = 'mbset -F-1 -I datalist.mb-1 -PTIDEMODE:1 -PTIDEFILE:' + str(TIDEFILE) + ' -PTIDEFORMAT:2'
-        os.system(command)
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        files , _, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PTIDEMODE:1 -PTIDEFILE:' + str(TIDEFILE) + ' -PTIDEFORMAT:2'
+            os.system(command)
         DATA_TO_PROC = 'yes'
 
     if CORRECT_TIDE == 'no':
         print('Not correcting Tide/removing tidal corrections')
-        command = 'mbset -F-1 -I datalist.mb-1 -PTIDEFILE:'
-        os.system(command)
-        command = 'mbset -F-1 -I datalist.mb-1 -PTIDEMODE:0:'
-        os.system(command)
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        files , _, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PTIDEMODE:0 -PTIDEFILE:'
+            os.system(command)
         DATA_TO_PROC = 'yes'
 
     # Process if needed
@@ -512,13 +548,34 @@ if LEVEL1 == 'yes':
 ##############################################################
 print("Level 2 processing is set to:", LEVEL2)
 if LEVEL2=='yes':
+
     if SSS_ACROSS_CUT == 'yes':
         print('Cutting SideScan Across Track')
-        command = 'mbset -F-1 -I datalist.mb-1 -PSSCUTDISTANCE:' + \
-            str(SSS_ACROSS_CUT_MIN) + '/' + str(SSS_ACROSS_CUT_MAX)
-        os.system(command)
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        _, files, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PSSCUTDISTANCE:' + \
+                str(SSS_ACROSS_CUT_MIN) + '/' + str(SSS_ACROSS_CUT_MAX)
+            os.system(command)
         DATA_TO_PROC = 'yes'
 
+    if SSS_CORRECTIONS == 'yes':
+        print('Applying set SSS corrections')
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        _, files, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PSSSWATHWIDTH:' + \
+            str(SSSWATHWIDTH)  + ' -PSSINTERPOLATE:' + str(SSINTERPOLATE)
+            os.system(command)
+        DATA_TO_PROC = 'yes'
 
     if EXPORT_ARC_CURVES == 'yes':
         print('Exporting ARC data')
@@ -540,8 +597,16 @@ if LEVEL2=='yes':
         if AVERAGE_ANGLE_CORR == 'yes':
             print('Setting BS correction to a survey level')
             process_scatter("-1", "datalistp.mb-1", CONSIDER_SEAFLOOR_SLOPE)
-            command = 'mbset -F-1 -Idatalistp.mb-1 -PSSCORRFILE:datalistp.mb-1_tot.sga'
-            os.system(command)
+            ID = 'mb' + str(FORMAT)
+            if rekursive_directory_search == 'no':
+                files = getfiles(ID)
+            if rekursive_directory_search == 'yes':
+                files = getfiles(ID, '.', 'yes')
+            _ , files, _ = choose_processed_unprocessed_file(files)
+            for mbfile in files:
+                print("updating mbset to survey level")
+                command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PSSCORRFILE:datalistp.mb-1_tot.sga'
+                os.system(command)
             DATA_TO_PROC = 'yes'
         else:
             print('Setting BS correction to a file level')
