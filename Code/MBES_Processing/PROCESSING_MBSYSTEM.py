@@ -35,7 +35,7 @@ LEVEL2 = 'no'
 LEVEL3 = 'no'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/KH201910/200/'
+PFAD = '/Volumes/Work/KH201910/200/'   # end with /
 rekursive_directory_search = 'no'
 PREPROCESS = 'yes'
 FORMAT = 89  # .ALL UND .S7K FILES  work
@@ -55,6 +55,8 @@ CORRECT_TIDE = ''        #no: removes entries from par fileand reprocesses
 TIDEFILE = ''  #Tidemode set to 2
 CORRECT_DRAFT = 'yes'
 DRAFT_CORR = 0.4
+
+EXPORT_NAV = 'no'           # Export Navigation information and stores under profile file name
 
 ##############################################################
 # LEVEL 2: Correct Backscatter Data
@@ -93,7 +95,7 @@ UTM_Convert = 'no'
 ZONE = '-JU'   # in syntax for mbsystem not implemented in mbsystem atm because of using geographical coordinates throughout
 
 #Only for work on a per-file bases
-EXPORT_NAV = 'yes'           # Export Navigation information and stores under profile file name
+
 EXPORT_BEAM_ANGLE = 'no'    #
 EXPORT_XYI = 'no'           #
 EXPORT_XYZ = 'no'
@@ -378,12 +380,13 @@ if LEVEL1 == 'yes':
     if GENERATE_DATALIST =='yes':
         #
         if rekursive_directory_search == 'no':
-            print('Generate datalists')
-            command = '/bin/ls -1 *.mb' + str(FORMAT) + ' | grep -v ".' + str(FORMAT) + '" | awk \'{print $1" ' + str(FORMAT) + '"}\' > datalist.mb-1'
+            print('Generate datalists non-recursive')
+            command = '/bin/ls -1 *[^p].mb' + str(FORMAT) + ' | awk \'{print $1" ' + str(FORMAT) + '"}\' > datalist.mb-1'
+            print(command)
             os.system(command)
 
         if rekursive_directory_search == 'yes':
-            print('Generate datalists')
+            print('Generate datalists recursive')
             command = 'find . -type f -name "*.mb' + str(FORMAT) + '" | awk \'{print $1" ' + str(FORMAT) + '"}\' > datalist.mb-1'
             os.system(command)
 
