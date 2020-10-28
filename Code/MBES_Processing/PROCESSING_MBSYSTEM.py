@@ -19,9 +19,6 @@ Created on Thu Sep 29 14:01:24 2016
 #todo implement high pass filter to improve stones
 #This script is intended to only work on survey level datafiles.
 
-#add priority file option for gridding the scatter moaic
-
-
 ##IOW Archive Structure
 #IOWDROPBOX/Survey_Data/datalist.mb-1  -> all s7k files
 #                       /year/datalist.mb-1 -> all s7k files of one year
@@ -30,12 +27,12 @@ Created on Thu Sep 29 14:01:24 2016
 # LEVEL 1: IMPORT AND BASIC CORRECTIONS
 ##############################################################
 # Control which levels are worked on
-LEVEL1 = 'no'
+LEVEL1 = 'yes'
 LEVEL2 = 'yes'
 LEVEL3 = 'yes'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/KH201910/200/'   # end with /
+PFAD = '/Volumes/Work/KH201910/test/'   # end with /
 rekursive_directory_search = 'no'
 PREPROCESS = 'yes'
 FORMAT = 89  # .ALL UND .S7K FILES  work
@@ -69,24 +66,24 @@ AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average 
 
 SSS_ACROSS_CUT = 'yes'
 SSS_ACROSS_CUT_MIN = 0
-SSS_ACROSS_CUT_MAX = 15
+SSS_ACROSS_CUT_MAX = 11
 
 SSS_CORRECTIONS = 'yes' #applies all of the follwoing settings
-SSSWATHWIDTH = 50
+SSSWATHWIDTH = 50  #that is supposed to e an agnle
 SSINTERPOLATE = 10
 ##############################################################
 # LEVEL 3: Make grid data
 ##############################################################
 
 SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
-INTERPOLATION = '-C3/2'      #up to three cells are interpolated
+INTERPOLATION = '-C3/1'      #up to three cells are interpolated
 ## Grids
-WORK_ON_PER_FILE_BASIS = 'yes'  # Make grids i.e. for each file individually
+WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
 
 # Work for both on a per-survey and per file setting
 GENERATE_BATHY_GRIDS = 'yes'
 GENERATE_SCATTER_GRIDS = 'yes'
-SCATTER_WITH_FILTER ='no'   #Export filtered grids
+SCATTER_WITH_FILTER ='yes'   #Export filtered grids
 EXPORT_XYI_FROM_GRID = 'no'
 """
 Idea: export first pings with mblist with depth and ship speed and make an educated guess on grid size for each file
@@ -104,8 +101,6 @@ EXPORT_BEAM_ANGLE = 'no'    #
 EXPORT_XYI = 'no'           #
 EXPORT_XYZ = 'no'
 KFAKTOR = 50               # jeder wievielte Schuss soll exportiert werden mit EXPORT_XYI
-
-
 
 FORCE_MBPROCESS = ''   #Force a mbprceoss run; only needed for manual changes
 number_of_exceptions = 0
@@ -255,10 +250,10 @@ def export_grid_file(SCATTERFILE, TYPE):
 def process_scatter(FORMAT, mbfile, CONSIDER_SEAFLOOR_SLOPE):
     if CONSIDER_SEAFLOOR_SLOPE == 'yes':
         command = 'mbbackangle -I' + mbfile + ' -F' + \
-            str(FORMAT) + ' -P20 -G2/70/70/50 -N81/80 -R44  -Q '
+            str(FORMAT) + ' -P2000 -G2/70/70/50 -N81/80 -R44  -Q '
     else:
         command = 'mbbackangle -I' + mbfile + \
-            ' -F' + str(FORMAT) + ' -G2/70/70/50 -P20 -R45 -N81/80 '
+            ' -F' + str(FORMAT) + ' -G2/70/70/50 -P2000 -R45 -N81/80 '
         os.system(command)
     command = 'mbset -I' + mbfile + ' -F' + str(FORMAT) + ' PSSCORRTYPE: 1'
     os.system(command)
@@ -558,7 +553,7 @@ if LEVEL2=='yes':
             files = getfiles(ID, '.', 'yes')
         _, files, _ = choose_processed_unprocessed_file(files)
         for mbfile in files:
-            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PSSCUTDISTANCE:' + \
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + '-PDATACUT:2/2 -PSSCUTDISTANCE:' + \
                 str(SSS_ACROSS_CUT_MIN) + '/' + str(SSS_ACROSS_CUT_MAX)
             os.system(command)
         DATA_TO_PROC = 'yes'
@@ -572,7 +567,7 @@ if LEVEL2=='yes':
             files = getfiles(ID, '.', 'yes')
         _, files, _ = choose_processed_unprocessed_file(files)
         for mbfile in files:
-            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' -PSSSWATHWIDTH:' + \
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' PSSCORRMODE:1 -PSSSWATHWIDTH:' + \
             str(SSSWATHWIDTH)  + ' -PSSINTERPOLATE:' + str(SSINTERPOLATE)
             os.system(command)
         DATA_TO_PROC = 'yes'
