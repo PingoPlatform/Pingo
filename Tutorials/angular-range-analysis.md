@@ -38,7 +38,7 @@ Enable inline plotting and load the pandas and numpy dataframe module \(within t
 
 ```text
 %pylab inline
-import pandas as pd  # The pandas module with be called by typing pd
+import pandas as pd  
 import numpy as np
 import matplotlib.pyplot as plt
 ```
@@ -46,16 +46,16 @@ import matplotlib.pyplot as plt
 Load the raw data we exported to the ASCII file into the pandas dataframe df\_raw.
 
 ```text
-df_raw = pd.read_csv('./data/20191017_091850_kh1910_400khz.arc', columns = ['X', 'Y', 'Angle', 'Intensity', 'PingCount', 'AcrossDist', 'Altitude'])
+df_raw = pd.read_csv('./data/20191017_091850_kh1910_400khz.arc', columns = ['X', 'Y', 'Ping', 'Height', 'AcrossDist', 'PulseLength', 'BS'])
 ```
 
-Lets plot the first 20000 data points. .iloc references the rows of a pandas dataframe. Note that indices and array in Python are enclosed in \[ \], while parameters for functions are specified within \( \).
+Lets plot the first 1000 data points. The method .iloc references the rows of a pandas dataframe. Note that indices and array in Python are enclosed in \[ \], while parameters for functions are specified within \( \).
 
 ```text
-df_raw.iloc[0:20000].plot.scatter(x='Angle', y='Intensity')
+df_raw.iloc[0:20000].plot.scatter(x='Angle', y='BS')
 ```
 
-![](../.gitbook/assets/image%20%2812%29.png)
+![](./img/image%20%2812%29.png)
 
 Some variance in the curves is apparent as well as some outliers. We will not try to correct or remove bad pings at all, which will have a noticeable effect later on. Normally, considerable effort should go into data cleaning.
 
