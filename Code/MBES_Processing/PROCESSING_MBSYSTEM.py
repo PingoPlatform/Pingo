@@ -14,7 +14,7 @@ Created on Thu Sep 29 14:01:24 2016
 ##!!! No spaces are allowed in the profile names or paths !!!
 
 ##!! A cmmon problem is that mbprocess fails becuase no .par files are present
-
+# test für ..par existance einabuen
 #todo: scatter grid for dataset auf def umstellen
 #todo implement high pass filter to improve stones
 #This script is intended to only work on survey level datafiles.
@@ -64,26 +64,27 @@ CONSIDER_SEAFLOOR_SLOPE = ''
 AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average (yes) for complete datesaet
 
 
-SSS_ACROSS_CUT = 'yes'
-SSS_ACROSS_CUT_MIN = 0
-SSS_ACROSS_CUT_MAX = 11
+SSS_ACROSS_CUT = 'no'
+SSS_ACROSS_CUT_MIN = -25
+SSS_ACROSS_CUT_MAX = 25
 
 SSS_CORRECTIONS = 'yes' #applies all of the follwoing settings
-SSSWATHWIDTH = 50  #that is supposed to e an agnle
-SSINTERPOLATE = 10
+SSSWATHWIDTH = 120  #that is supposed to e an agnle. I have no clue what happens
+# but settings this to any value removes the beams where the roll claib failed...
+SSINTERPOLATE = 0
 ##############################################################
 # LEVEL 3: Make grid data
 ##############################################################
 
-SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
+SCATTER_FILTER = ''       #low or high - high not implemented atm works on p-files
 INTERPOLATION = '-C3/1'      #up to three cells are interpolated
 ## Grids
 WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
 
 # Work for both on a per-survey and per file setting
-GENERATE_BATHY_GRIDS = 'yes'
+GENERATE_BATHY_GRIDS = 'no'
 GENERATE_SCATTER_GRIDS = 'yes'
-SCATTER_WITH_FILTER ='yes'   #Export filtered grids
+SCATTER_WITH_FILTER ='no'   #Export filtered grids
 EXPORT_XYI_FROM_GRID = 'no'
 """
 Idea: export first pings with mblist with depth and ship speed and make an educated guess on grid size for each file
@@ -150,6 +151,18 @@ if SS_FORMAT not in ["S", "C", "auto", "W", "B"]:
 ##############################################################
 # Functions
 ##############################################################
+def test_for_par_files(FORMAT, mbfile):
+    # Work aorund to reate par files
+    import os.paths
+    if os.path.isfile(mbfile + ".par"):
+        print ("Parameter file exist")
+    else:
+        print ("Parameter file not existing for ", mbfile)
+        command = "mbset -F" + "FORMAT" + " -I" + mbfile + " -PNAVMODE:1"
+        os.system(command)
+        command = "mbset -F" + "FORMAT" + " -I" + mbfile + " -PNAVMODE:0"
+        os.system(command)
+
 
 def test_for_processed_mbfiles(files):
     # Test if files already processed -> Test if inf files exists
@@ -335,7 +348,7 @@ def bathy_grid_file(file, BATHY_RES, FORMAT):
 
 def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FORMAT):
         name_add = ''
-        print('Generate Scatter Grid')
+        print('Generate Scatter Grid for file:', file )
         datatype = '-A4'
         if SCATTER_WITH_FILTER =='yes':
             print('Plotting grids of low-pass-filtererd SSS data')
@@ -344,11 +357,11 @@ def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FOR
         # Generate first cut sidescan mosaic and plot
         command = 'mbm_grid ' + datatype + ' -M -Y1 -P0 -G3  ' + ' ' +  SCATTER_RES + ' ' + INTERPOLATION + ' -F' + str(FORMAT) + ' -I' +file + ' ' + '-O' + file +'_sss' + name_add
         os.system(command)
-        if SCATTER_WITH_FILTER =='no':
-            command = './' + file + '_sss_mbmosaic.cmd '
-            os.system(command)
         if SCATTER_WITH_FILTER =='yes':
             command = './' + file + '_sss_filtered_mbmosaic.cmd '
+        else:
+            print("Hello")
+            command = './' + file + '_sss_mbmosaic.cmd '
             os.system(command)
         return
 
@@ -392,6 +405,16 @@ if LEVEL1 == 'yes':
         # Generate a datalist referencing processed mb201 files named datalistp.mb-1
         command = 'mbdatalist -Z -I datalist.mb-1'
         os.system(command)
+
+    # test for par files level 1
+    ID = 'mb' + str(FORMAT)
+    if rekursive_directory_search == 'no':
+        files = getfiles(ID)
+    if rekursive_directory_search == 'yes':
+        files = getfiles(ID, '.', 'yes')
+    files, _, _ = choose_processed_unprocessed_file(files)
+    for mbfile in files:
+        test_for_par_files(FORMAT, mbfile)
 
     if AUTO_CLEAN_BATHY == 'yes':
         ID = 'mb' + str(FORMAT)
@@ -544,48 +567,15 @@ if LEVEL1 == 'yes':
 print("Level 2 processing is set to:", LEVEL2)
 if LEVEL2=='yes':
 
-    if SSS_ACROSS_CUT == 'yes':
-        print('Cutting SideScan Across Track')
-        ID = 'mb' + str(FORMAT)
-        if rekursive_directory_search == 'no':
-            files = getfiles(ID)
-        if rekursive_directory_search == 'yes':
-            files = getfiles(ID, '.', 'yes')
-        _, files, _ = choose_processed_unprocessed_file(files)
-        for mbfile in files:
-            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + '-PDATACUT:2/2 -PSSCUTDISTANCE:' + \
-                str(SSS_ACROSS_CUT_MIN) + '/' + str(SSS_ACROSS_CUT_MAX)
-            os.system(command)
-        DATA_TO_PROC = 'yes'
-
-    if SSS_CORRECTIONS == 'yes':
-        print('Applying set SSS corrections')
-        ID = 'mb' + str(FORMAT)
-        if rekursive_directory_search == 'no':
-            files = getfiles(ID)
-        if rekursive_directory_search == 'yes':
-            files = getfiles(ID, '.', 'yes')
-        _, files, _ = choose_processed_unprocessed_file(files)
-        for mbfile in files:
-            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' PSSCORRMODE:1 -PSSSWATHWIDTH:' + \
-            str(SSSWATHWIDTH)  + ' -PSSINTERPOLATE:' + str(SSINTERPOLATE)
-            os.system(command)
-        DATA_TO_PROC = 'yes'
-
-    if EXPORT_ARC_CURVES == 'yes':
-        print('Exporting ARC data')
-        print("Angles cannot be correctly exported from mbsystem with the -NA side scan option as of 20.10.2020")
-        print("Flat grazing angles need to be calculated in postprocessing until that time")
-        ID = '.mb' + str(FORMAT)
-        if rekursive_directory_search == 'no':
-            files = getfiles(ID)
-        if rekursive_directory_search == 'yes':
-            files = getfiles(ID, '.', 'yes')
-        _, files , _= choose_processed_unprocessed_file(files)
-        # mblist command to export arc
-        Parallel(n_jobs=num_cores)(delayed(export_arc)(mbfile, FORMAT)
-                                for mbfile in tqdm(files))
-
+    # test for par files level 2
+    ID = 'mb' + str(FORMAT)
+    if rekursive_directory_search == 'no':
+        files = getfiles(ID)
+    if rekursive_directory_search == 'yes':
+        files = getfiles(ID, '.', 'yes')
+    _, files, _ = choose_processed_unprocessed_file(files)
+    for mbfile in files:
+        test_for_par_files(FORMAT, mbfile)
 
     if PROCESS_SCATTER == 'yes':
         print('Process Scatter')
@@ -626,8 +616,57 @@ if LEVEL2=='yes':
         # Process the data
         DATA_TO_PROC = 'yes'
 
+    if SSS_ACROSS_CUT == 'yes':
+        print('Cutting SideScan Across Track')
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        _, files, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + '-PDATACUT:2/2/-1000/' + \
+                str(SSS_ACROSS_CUT_MIN)
+            os.system(command)
+            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + '-PDATACUT:2/2/-1000/' + \
+                            str(SSS_ACROSS_CUT_MAX)
+        DATA_TO_PROC = 'yes'
+
+    if SSS_CORRECTIONS == 'yes':
+        print('Applying set SSS corrections')
+        ID = 'mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        _, files, _ = choose_processed_unprocessed_file(files)
+        for mbfile in files:
+            # sed -i 's/search_string/replace_string/' filename
+            #command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + ' PSSCORRMODE:1 -PSSSWATHWIDTH:' + \
+            #str(SSSWATHWIDTH)  + ' -PSSINTERPOLATE:' + str(SSINTERPOLATE)
+            command = "sed -i \"\" \'s/SSRECALCMODE*/SSRECALCMODE 1/\' " + mbfile+".par"
+            os.system(command)
+            command = "sed -i \"\" \'s/SSSWATHWIDTH*/SSSWATHWIDTH " + str(SSSWATHWIDTH) +"/\' " + mbfile+".par"
+            os.system(command)
+            command = "sed -i \"\" \'s/SSINTERPOLATE*/SSINTERPOLATE " + str(SSINTERPOLATE) +"/\' " + mbfile+".par"
+            os.system(command)
+        DATA_TO_PROC = 'yes'
+
+    if EXPORT_ARC_CURVES == 'yes':
+        print('Exporting ARC data')
+        print("Angles cannot be correctly exported from mbsystem with the -NA side scan option as of 20.10.2020")
+        print("Flat grazing angles need to be calculated in postprocessing until that time")
+        ID = '.mb' + str(FORMAT)
+        if rekursive_directory_search == 'no':
+            files = getfiles(ID)
+        if rekursive_directory_search == 'yes':
+            files = getfiles(ID, '.', 'yes')
+        _, files , _= choose_processed_unprocessed_file(files)
+        # mblist command to export arc
+        Parallel(n_jobs=num_cores)(delayed(export_arc)(mbfile, FORMAT)
+                                for mbfile in tqdm(files))
+
     # Process if needed
-    #DATA_TO_PROC = 'no'
     if FORCE_MBPROCESS == 'yes':
         DATA_TO_PROC = 'yes'
 
