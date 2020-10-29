@@ -40,9 +40,96 @@ The biomass of _P. ulvae_ and _C. glaucum_ increased from spring to autumn, thou
 *Visualisation of differences between Spring and Summer in the Hohe Düne focus area in 2019. The mosaics comprise only two channels (200 kHz, red channel, and 400 kHz, green channel). Note the different appearance of seagrass of different abundance in the backscatter mosaics (medium row), and the appearance of hydrodynamically induced bedforms in facies D (lowermost row).*
 
 ## Repeatable Description of Processing Steps
-The following processing steps for the acoustic data utilize MB-System (https://github.com/dwcaress/MB-System) and the Pysesa Toolbox by Daniel Buscombe (https://dbuscombe-usgs.github.io/pysesa/README.html). For reproducing the data, please download the following dataset (approx. 60 GB), including a summer-survey with two frequencies of 400 and 700 kHz.
+The following processing steps for the acoustic data utilize MB-System (https://github.com/dwcaress/MB-System) and the Pysesa Toolbox by Daniel Buscombe (https://dbuscombe-usgs.github.io/pysesa/README.html) and a Python environment (e.g., https://www.anaconda.com). For reproducing the data, please download the following dataset (approx. 60 GB), including a summer-survey with two frequencies of 400 and 700 kHz, from https://www.dropbox.com/sh/80omr76fyo1b1i4/AACEAKTIOkOy-ctEXi8mwCnHa?dl=0. A virtual machine with mbsystem is available at https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 and can be loaded in VirtualBox, however as of today (28.10.2020), the installed mbsystem in the virtual machine is outdated and needs to be updated. 
 
 The following steps can be reproduced to repeat the backscatter maps (NOTE: we leave out steps for roll calibration, cleaning of data and sound velocity corrections which affect quality of the bahtymetric data. In the tutorial section of this git, information on how to apply these corrections is available).
+We use the tool PROCESSING_MBSYSTEM.py , which is found in this git under Code/MBES_Processing. To create a mosaic of the 400 kHz data, edit the file mbsystem_config.py to have thefollowing values:
+
+```
+##############################################################
+# LEVEL 1: IMPORT AND BASIC CORRECTIONS
+##############################################################
+# Control which levels are worked on
+LEVEL1 = 'yes'
+LEVEL2 = 'yes'
+LEVEL3 = 'yes'
+
+remove_lock_files = 'yes' 
+PFAD = './../../ATLAS/data/400/'   # end with / . CHange if you stored data elswhere
+rekursive_directory_search = 'no'
+PREPROCESS = 'yes'
+FORMAT = 89  # for s7k files
+file_end = '.s7k'
+SS_FORMAT = 'C'  # C to read field 7058 in s7k. S to read field 7028 
+AREA = '12.10/12.1143/54.1844/54.18997'  # WESN limits of the study site
+GENERATE_DATALIST = 'yes'
+AUTO_CLEAN_BATHY = 'yes'
+ATTITUDE_LAG = ''
+SELECT_SVP = '' 
+SVP = ''           
+CORRECT_HPR=''
+ROLL_CORR = 0.00
+PITCH_CORR = 0.00
+CORRECT_TIDE = ''    
+TIDEFILE = '' 
+CORRECT_DRAFT = 'yes'
+DRAFT_CORR = 0.4
+
+EXPORT_NAV = 'no'       
+
+##############################################################
+# LEVEL 2: Correct Backscatter Data
+##############################################################
+EXPORT_ARC_CURVES = 'no'
+PROCESS_SCATTER = 'yes'  
+CONSIDER_SEAFLOOR_SLOPE = ''
+AVERAGE_ANGLE_CORR = 'yes' 
+
+SSS_ACROSS_CUT = 'yes'
+SSS_ACROSS_CUT_MIN = -20
+SSS_ACROSS_CUT_MAX = 20
+
+SSS_CORRECTIONS = 'yes' 
+SSSWATHWIDTH = 160  
+SSINTERPOLATE = 2
+##############################################################
+# LEVEL 3: Make grid data
+##############################################################
+
+SCATTER_FILTER = 'low'      
+INTERPOLATION = '-C3/1'   
+
+## Grids
+WORK_ON_PER_FILE_BASIS = 'no'  
+
+# Work for both on a per-survey and per file setting
+GENERATE_BATHY_GRIDS = 'yes'
+GENERATE_SCATTER_GRIDS = 'yes'
+SCATTER_WITH_FILTER ='yes'   #Export filtered grids
+EXPORT_XYI_FROM_GRID = 'no'
+BATHY_RES = '-E1/1'
+SCATTER_RES = '-E0.5/0.5'
+
+# convert Grids
+UTM_Convert = 'no'
+ZONE = '-JU'   
+
+#Only for work on a per-file bases
+EXPORT_BEAM_ANGLE = 'no'    #
+EXPORT_XYI = 'no'           #
+EXPORT_XYZ = 'no'
+KFAKTOR = 50               # 
+
+FORCE_MBPROCESS = ''   #F orce a mbprceoss run; only needed for manual changes
+number_of_exceptions = 0
+
+```
+
+Then, execute the file 
+`python PROCESSING_MBSYSTEM.py`
+
+which will generate a .grd file in the 400 kHz folder. Repeat the steps for the 700 kHz folder by adapting the path correspondingly.
+
 
 ## References
 
