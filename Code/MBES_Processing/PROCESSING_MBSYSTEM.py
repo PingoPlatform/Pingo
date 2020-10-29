@@ -13,8 +13,6 @@ Created on Thu Sep 29 14:01:24 2016
 ##!!!! The filename of the profile lines MUST NOT END with a p !!!!
 ##!!! No spaces are allowed in the profile names or paths !!!
 
-##!! A cmmon problem is that mbprocess fails becuase no .par files are present
-# test für ..par existance einabuen
 #todo: scatter grid for dataset auf def umstellen
 #todo implement high pass filter to improve stones
 #This script is intended to only work on survey level datafiles.
@@ -32,9 +30,9 @@ LEVEL2 = 'yes'
 LEVEL3 = 'yes'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/KH201910/test/'   # end with /
+PFAD = '/Volumes/Work/KH201910/200/'   # end with /
 rekursive_directory_search = 'no'
-PREPROCESS = 'yes'
+PREPROCESS = 'no'
 FORMAT = 89  # .ALL UND .S7K FILES  work
 file_end = '.s7k'
 SS_FORMAT = 'C'  # scbw  s snippet c calib. snippet b widebeambackscatter w calibwidebeambackscatter "auto" - no option
@@ -53,7 +51,7 @@ TIDEFILE = ''  #Tidemode set to 2
 CORRECT_DRAFT = 'yes'
 DRAFT_CORR = 0.4
 
-EXPORT_NAV = 'no'           # Export Navigation information and stores under profile file name
+EXPORT_NAV = 'yes'           # Export Navigation information and stores under profile file name
 
 ##############################################################
 # LEVEL 2: Correct Backscatter Data
@@ -64,7 +62,7 @@ CONSIDER_SEAFLOOR_SLOPE = ''
 AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average (yes) for complete datesaet
 
 
-SSS_ACROSS_CUT = 'no'
+SSS_ACROSS_CUT = 'yes'
 SSS_ACROSS_CUT_MIN = -25
 SSS_ACROSS_CUT_MAX = 25
 
@@ -76,15 +74,15 @@ SSINTERPOLATE = 0
 # LEVEL 3: Make grid data
 ##############################################################
 
-SCATTER_FILTER = ''       #low or high - high not implemented atm works on p-files
+SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
 INTERPOLATION = '-C3/1'      #up to three cells are interpolated
 ## Grids
 WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
 
 # Work for both on a per-survey and per file setting
-GENERATE_BATHY_GRIDS = 'no'
+GENERATE_BATHY_GRIDS = 'yes'
 GENERATE_SCATTER_GRIDS = 'yes'
-SCATTER_WITH_FILTER ='no'   #Export filtered grids
+SCATTER_WITH_FILTER ='yes'   #Export filtered grids
 EXPORT_XYI_FROM_GRID = 'no'
 """
 Idea: export first pings with mblist with depth and ship speed and make an educated guess on grid size for each file
@@ -153,7 +151,6 @@ if SS_FORMAT not in ["S", "C", "auto", "W", "B"]:
 ##############################################################
 def test_for_par_files(FORMAT, mbfile):
     # Work aorund to reate par files
-    import os.paths
     if os.path.isfile(mbfile + ".par"):
         print ("Parameter file exist")
     else:
@@ -162,7 +159,6 @@ def test_for_par_files(FORMAT, mbfile):
         os.system(command)
         command = "mbset -F" + "FORMAT" + " -I" + mbfile + " -PNAVMODE:0"
         os.system(command)
-
 
 def test_for_processed_mbfiles(files):
     # Test if files already processed -> Test if inf files exists
@@ -272,7 +268,6 @@ def process_scatter(FORMAT, mbfile, CONSIDER_SEAFLOOR_SLOPE):
     os.system(command)
     return
 
-
 def getfiles(ID='', PFAD='.', rekursive='no'):
     # Gibt eine Liste mit Dateien in PFAD und der Endung IDENTIFIER aus.
     import os
@@ -285,7 +280,6 @@ def getfiles(ID='', PFAD='.', rekursive='no'):
     if rekursive == 'yes':
         files = glob2.glob(PFAD + '/**/*' + ID)
     return files
-
 
 def choose_processed_unprocessed_file(file_list):
     unprocessed_files = []
@@ -302,18 +296,15 @@ def choose_processed_unprocessed_file(file_list):
             processed_processed_files.append(i)
     return unprocessed_files, processed_files, processed_processed_files
 
-
 def mbprocess(FORMAT, mbfile):
     command = 'mbprocess  -F' + str(FORMAT) + ' -I' + mbfile
     os.system(command)
     return
 
-
 def mbfilter(FORMAT, mbfilep):
     command = 'mbfilter -S3/7/7/2 -F' + str(FORMAT) + ' -I' + mbfilep
     os.system(command)
     return
-
 
 def mbpreprocess(FORMAT, mbfile, SS_FORMAT):
     if SS_FORMAT == 'auto':
@@ -625,11 +616,10 @@ if LEVEL2=='yes':
             files = getfiles(ID, '.', 'yes')
         _, files, _ = choose_processed_unprocessed_file(files)
         for mbfile in files:
-            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + '-PDATACUT:2/2/-1000/' + \
-                str(SSS_ACROSS_CUT_MIN)
+            command = "sed -i \"\" \'s/DATACUT*/DATACUT 2 2 -1000  " + str(SSS_ACROSS_CUT_MIN) +"/\' " + mbfile+".par"
             os.system(command)
-            command = 'mbset -F' + str(FORMAT) + ' -I' + mbfile + '-PDATACUT:2/2/-1000/' + \
-                            str(SSS_ACROSS_CUT_MAX)
+            command = "sed -i \"\" \'s/DATACUT*/DATACUT 2 2 0  " + str(SSS_ACROSS_CUT_MAX) +"/\' " + mbfile+".par"
+            os.system(command)
         DATA_TO_PROC = 'yes'
 
     if SSS_CORRECTIONS == 'yes':
@@ -694,8 +684,6 @@ if LEVEL2=='yes':
             os.system(command)
 
     DATA_TO_PROC = 'no'
-
-
 ##############################################################
 # LEVEL 3: Grids
 ##############################################################
@@ -715,7 +703,6 @@ if LEVEL3 =='yes':
     if SCATTER_FILTER == 'high':
         print('Highpass not yet implemented')
         SCATTER_WITH_FILTER ='no'
-
 
     if WORK_ON_PER_FILE_BASIS =='no':
         print('working on a dataset basis')
@@ -762,7 +749,6 @@ if LEVEL3 =='yes':
                 os.system(command)
             except:
                 print('No filtered gridfile for export to xyi')
-
 
     if WORK_ON_PER_FILE_BASIS =='yes':
         print('working on a per-file-basis')
