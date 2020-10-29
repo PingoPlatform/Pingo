@@ -1,12 +1,10 @@
 
 # Shallow occurence of coarse sand and gravel
 
-## Habitat Name and Description
-
 
 ## Location
 ![Location of sample area](img/cgs_03.png)
-The sample CGS area HOHE DÜNE is located in water depths of approx. 5 m in the southern baltic Sea directly offshore Rostock-Warnemünde.
+The sample reef area HOHE DÜNE is located in water depths of approx. 5 m in the southern baltic Sea directly offshore Rostock-Warnemünde.
 
 ## Ground Truthing Data
 ### Geology
@@ -40,8 +38,9 @@ The biomass of _P. ulvae_ and _C. glaucum_ increased from spring to autumn, thou
 *Visualisation of differences between Spring and Summer in the Hohe Düne focus area in 2019. The mosaics comprise only two channels (200 kHz, red channel, and 400 kHz, green channel). Note the different appearance of seagrass of different abundance in the backscatter mosaics (medium row), and the appearance of hydrodynamically induced bedforms in facies D (lowermost row).*
 
 ## Repeatable Description of Processing Steps
-The following processing steps for the acoustic data utilize MB-System (https://github.com/dwcaress/MB-System) and the Pysesa Toolbox by Daniel Buscombe (https://dbuscombe-usgs.github.io/pysesa/README.html) and a Python environment (e.g., https://www.anaconda.com). For reproducing the data, please download the following dataset (approx. 60 GB), including a summer-survey with two frequencies of 400 and 700 kHz, from https://www.dropbox.com/sh/80omr76fyo1b1i4/AACEAKTIOkOy-ctEXi8mwCnHa?dl=0. A virtual machine with mbsystem is available at https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 and can be loaded in VirtualBox, however as of today (28.10.2020), the installed mbsystem in the virtual machine is outdated and needs to be updated. 
+The following processing steps for the acoustic data utilize MB-System (https://github.com/dwcaress/MB-System) and the Pysesa Toolbox by Daniel Buscombe (https://dbuscombe-usgs.github.io/pysesa/README.html) and a Python environment (e.g., https://www.anaconda.com) and GMT (https://www.generic-mapping-tools.org). For reproducing the data, please download the following dataset (approx. 60 GB), including a summer-survey with two frequencies of 400 and 700 kHz, from https://www.dropbox.com/sh/80omr76fyo1b1i4/AACEAKTIOkOy-ctEXi8mwCnHa?dl=0. A virtual machine with mbsystem is available at https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 and can be loaded in VirtualBox, however as of today (28.10.2020), the installed mbsystem in the virtual machine is outdated and needs to be updated. 
 
+### Reproduce the multispectral grids
 The following steps can be reproduced to repeat the backscatter maps (NOTE: we leave out steps for roll calibration, cleaning of data and sound velocity corrections which affect quality of the bahtymetric data. In the tutorial section of this git, information on how to apply these corrections is available).
 We use the tool PROCESSING_MBSYSTEM.py , which is found in this git under Code/MBES_Processing. To create a mosaic of the 400 kHz data, edit the file mbsystem_config.py to have thefollowing values:
 
@@ -92,10 +91,10 @@ SSS_ACROSS_CUT_MAX = 20
 SSS_CORRECTIONS = 'yes' 
 SSSWATHWIDTH = 160  
 SSINTERPOLATE = 2
+
 ##############################################################
 # LEVEL 3: Make grid data
 ##############################################################
-
 SCATTER_FILTER = 'low'      
 INTERPOLATION = '-C3/1'   
 
@@ -115,12 +114,12 @@ UTM_Convert = 'no'
 ZONE = '-JU'   
 
 #Only for work on a per-file bases
-EXPORT_BEAM_ANGLE = 'no'    #
-EXPORT_XYI = 'no'           #
+EXPORT_BEAM_ANGLE = 'no'    
+EXPORT_XYI = 'no'           
 EXPORT_XYZ = 'no'
-KFAKTOR = 50               # 
+KFAKTOR = 50               
 
-FORCE_MBPROCESS = ''   #F orce a mbprceoss run; only needed for manual changes
+FORCE_MBPROCESS = 'no'   
 number_of_exceptions = 0
 
 ```
@@ -129,6 +128,16 @@ Then, execute the file
 `python PROCESSING_MBSYSTEM.py`
 
 which will generate a .grd file in the 400 kHz folder. Repeat the steps for the 700 kHz folder by adapting the path correspondingly.
+
+To combine the two grids into a multispectral tif, convert the two grid files to grayscale georeferenced tif images. 
+
+`gmt grdimage sss_grid.grd -A400.tif -Cgray`
+`gmt grdimage sss_grid.grd -A700.tif -Cgray`
+
+These two grids can now be combined to a multispectral image. Note that gmt grdimage requires either one or three input files, so one grid is supplied twice. This does not matter here (but of course has to be kept in mind), as the in GIS the bands to be displayed can be selected.
+
+`gmt grdimage sss_grid.grd -HD_multispectral.tif`
+
 
 
 ## References

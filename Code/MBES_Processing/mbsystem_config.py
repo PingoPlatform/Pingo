@@ -2,19 +2,19 @@
 # LEVEL 1: IMPORT AND BASIC CORRECTIONS
 ##############################################################
 # Control which levels are worked on
-LEVEL1 = 'yes'
+LEVEL1 = 'no'
 LEVEL2 = 'no'
-LEVEL3 = 'no'
+LEVEL3 = 'yes'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Users/peter/IOWDropbox/Projects/ECOMAP/Oderbank/emb205_stx_calib/'   # end with /
+PFAD = '/Volumes/Work/pingo/400/'   # end with /
 rekursive_directory_search = 'no'
 PREPROCESS = 'yes'
 FORMAT = 89  # .ALL UND .S7K FILES  work
 file_end = '.s7k'
 SS_FORMAT = 'C'  # scbw  s snippet c calib. snippet b widebeambackscatter w calibwidebeambackscatter "auto" - no option
 
-AREA = '12.10/12.1143/54.1844/54.18997'  # WESN. printed in datalist.info at the end of level1
+AREA = '12.1053/12.11422/54.1844/55.189965'  # WESN. printed in datalist.info at the end of level1
 GENERATE_DATALIST = 'yes'
 AUTO_CLEAN_BATHY = 'yes'
 ATTITUDE_LAG = ''
@@ -33,15 +33,15 @@ EXPORT_NAV = 'no'           # Export Navigation information and stores under pro
 ##############################################################
 # LEVEL 2: Correct Backscatter Data
 ##############################################################
-EXPORT_ARC_CURVES = 'yes'
+EXPORT_ARC_CURVES = 'no'
 PROCESS_SCATTER = 'yes'  # yes is running mbbackangle
 CONSIDER_SEAFLOOR_SLOPE = ''
 AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average (yes) for complete datesaet
 
 
 SSS_ACROSS_CUT = 'yes'
-SSS_ACROSS_CUT_MIN = -35
-SSS_ACROSS_CUT_MAX = 35
+SSS_ACROSS_CUT_MIN = -55
+SSS_ACROSS_CUT_MAX = 55
 
 SSS_CORRECTIONS = 'no' #applies all of the follwoing settings
 SSSWATHWIDTH = 160  #that is supposed to e an agnle. I have no clue what happens
@@ -51,10 +51,10 @@ SSINTERPOLATE = 0
 # LEVEL 3: Make grid data
 ##############################################################
 
-SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
+SCATTER_FILTER = ''       #low or high - high not implemented atm works on p-files
 INTERPOLATION = '-C3/1'      #up to three cells are interpolated
 ## Grids
-WORK_ON_PER_FILE_BASIS = 'yes'  # Make grids i.e. for each file individually
+WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
 
 # Work for both on a per-survey and per file setting
 GENERATE_BATHY_GRIDS = 'yes'
@@ -65,7 +65,7 @@ EXPORT_XYI_FROM_GRID = 'no'
 Idea: export first pings with mblist with depth and ship speed and make an educated guess on grid size for each file
 """
 BATHY_RES = '-E1/1'
-SCATTER_RES = '-E0.5/0.5'
+SCATTER_RES = '-E0.25/0.25'
 
 # convert Grids. to implemented atm the results files are converted for speed reasons
 UTM_Convert = 'no'
