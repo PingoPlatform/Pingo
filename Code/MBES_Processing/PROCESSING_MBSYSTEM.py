@@ -30,7 +30,7 @@ LEVEL2 = 'yes'
 LEVEL3 = 'yes'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/KH201910/200/'   # end with /
+PFAD = '/Users/peter/IOWDropbox/Projects/ECOMAP/Oderbank/emb205_stx_calib/'   # end with /
 rekursive_directory_search = 'no'
 PREPROCESS = 'no'
 FORMAT = 89  # .ALL UND .S7K FILES  work
@@ -49,27 +49,27 @@ PITCH_CORR = 0.00
 CORRECT_TIDE = ''        #no: removes entries from par fileand reprocesses
 TIDEFILE = ''  #Tidemode set to 2
 CORRECT_DRAFT = 'yes'
-DRAFT_CORR = 0.4
+DRAFT_CORR = 3.6
 
 EXPORT_NAV = 'yes'           # Export Navigation information and stores under profile file name
 
 ##############################################################
 # LEVEL 2: Correct Backscatter Data
 ##############################################################
-EXPORT_ARC_CURVES = 'no'
+EXPORT_ARC_CURVES = 'yes'
 PROCESS_SCATTER = 'yes'  # yes is running mbbackangle
 CONSIDER_SEAFLOOR_SLOPE = ''
 AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average (yes) for complete datesaet
 
 
 SSS_ACROSS_CUT = 'yes'
-SSS_ACROSS_CUT_MIN = -25
-SSS_ACROSS_CUT_MAX = 25
+SSS_ACROSS_CUT_MIN = -35
+SSS_ACROSS_CUT_MAX = 35
 
-SSS_CORRECTIONS = 'yes' #applies all of the follwoing settings
-SSSWATHWIDTH = 120  #that is supposed to e an agnle. I have no clue what happens
+SSS_CORRECTIONS = 'no' #applies all of the follwoing settings
+SSSWATHWIDTH = 160  #that is supposed to e an agnle. I have no clue what happens
 # but settings this to any value removes the beams where the roll claib failed...
-SSINTERPOLATE = 0
+SSINTERPOLATE = 2
 ##############################################################
 # LEVEL 3: Make grid data
 ##############################################################
@@ -77,7 +77,7 @@ SSINTERPOLATE = 0
 SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
 INTERPOLATION = '-C3/1'      #up to three cells are interpolated
 ## Grids
-WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
+WORK_ON_PER_FILE_BASIS = 'yes'  # Make grids i.e. for each file individually
 
 # Work for both on a per-survey and per file setting
 GENERATE_BATHY_GRIDS = 'yes'
@@ -143,6 +143,10 @@ if remove_lock_files == 'yes':
 ##############################################################
 if SS_FORMAT not in ["S", "C", "auto", "W", "B"]:
     print("Select correct SS_Format identifier - refer to man mbpreprocess")
+    sys.exit(0)
+
+if SCATTER_WITH_FILTER not in ["yes", "no"]:
+    print("SCATTER_WITH_FILTER must be yes or no. Do it or do it not. There is no try")
     sys.exit(0)
 
 
@@ -350,8 +354,8 @@ def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FOR
         os.system(command)
         if SCATTER_WITH_FILTER =='yes':
             command = './' + file + '_sss_filtered_mbmosaic.cmd '
-        else:
-            print("Hello")
+            os.system(command)
+        if SCATTER_WITH_FILTER =='no':
             command = './' + file + '_sss_mbmosaic.cmd '
             os.system(command)
         return
