@@ -21,89 +21,6 @@ Created on Thu Sep 29 14:01:24 2016
 #IOWDROPBOX/Survey_Data/datalist.mb-1  -> all s7k files
 #                       /year/datalist.mb-1 -> all s7k files of one year
 #                            /survey/datalist.mb-1 -> all files of a particular survey
-##############################################################
-# LEVEL 1: IMPORT AND BASIC CORRECTIONS
-##############################################################
-# Control which levels are worked on
-LEVEL1 = 'yes'
-LEVEL2 = 'yes'
-LEVEL3 = 'yes'
-
-remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/KH201910/200/'   # end with /
-rekursive_directory_search = 'no'
-PREPROCESS = 'no'
-FORMAT = 89  # .ALL UND .S7K FILES  work
-file_end = '.s7k'
-SS_FORMAT = 'C'  # scbw  s snippet c calib. snippet b widebeambackscatter w calibwidebeambackscatter "auto" - no option
-
-AREA = '12.10/12.1143/54.1844/54.18997'  # WESN. printed in datalist.info at the end of level1
-GENERATE_DATALIST = 'yes'
-AUTO_CLEAN_BATHY = 'yes'
-ATTITUDE_LAG = ''
-SELECT_SVP = ''          # mbsvpselect crashing at the moment why?? -> mbsystem bug? has to be done manually atm
-SVP = ''             #this is the manual file included in all par files
-CORRECT_HPR=''
-ROLL_CORR = 0.00
-PITCH_CORR = 0.00
-CORRECT_TIDE = ''        #no: removes entries from par fileand reprocesses
-TIDEFILE = ''  #Tidemode set to 2
-CORRECT_DRAFT = 'yes'
-DRAFT_CORR = 0.4
-
-EXPORT_NAV = 'yes'           # Export Navigation information and stores under profile file name
-
-##############################################################
-# LEVEL 2: Correct Backscatter Data
-##############################################################
-EXPORT_ARC_CURVES = 'no'
-PROCESS_SCATTER = 'yes'  # yes is running mbbackangle
-CONSIDER_SEAFLOOR_SLOPE = ''
-AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average (yes) for complete datesaet
-
-
-SSS_ACROSS_CUT = 'yes'
-SSS_ACROSS_CUT_MIN = -25
-SSS_ACROSS_CUT_MAX = 25
-
-SSS_CORRECTIONS = 'yes' #applies all of the follwoing settings
-SSSWATHWIDTH = 120  #that is supposed to e an agnle. I have no clue what happens
-# but settings this to any value removes the beams where the roll claib failed...
-SSINTERPOLATE = 0
-##############################################################
-# LEVEL 3: Make grid data
-##############################################################
-
-SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
-INTERPOLATION = '-C3/1'      #up to three cells are interpolated
-## Grids
-WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
-
-# Work for both on a per-survey and per file setting
-GENERATE_BATHY_GRIDS = 'yes'
-GENERATE_SCATTER_GRIDS = 'yes'
-SCATTER_WITH_FILTER ='yes'   #Export filtered grids
-EXPORT_XYI_FROM_GRID = 'no'
-"""
-Idea: export first pings with mblist with depth and ship speed and make an educated guess on grid size for each file
-"""
-BATHY_RES = '-E1/1'
-SCATTER_RES = '-E0.5/0.5'
-
-# convert Grids. ot implemented atm the results files are converted for speed reasons
-UTM_Convert = 'no'
-ZONE = '-JU'   # in syntax for mbsystem not implemented in mbsystem atm because of using geographical coordinates throughout
-
-#Only for work on a per-file bases
-
-EXPORT_BEAM_ANGLE = 'no'    #
-EXPORT_XYI = 'no'           #
-EXPORT_XYZ = 'no'
-KFAKTOR = 50               # jeder wievielte Schuss soll exportiert werden mit EXPORT_XYI
-
-FORCE_MBPROCESS = ''   #Force a mbprceoss run; only needed for manual changes
-number_of_exceptions = 0
-
 
 ##############################################################
 # Preparation
@@ -116,8 +33,31 @@ sys.path.append('./functions')
 import os
 import FUNCTIONS_GEOGRAPHIC as fg
 from tqdm import tqdm
+import argparse
 
-#Multiprocessing Setup
+##############################################################
+# Load Config File
+##############################################################
+parser = argparse.ArgumentParser()
+#Required Arguments
+parser.add_argument('config_file', type=str, help="Link to File with variables without .py extenstion")
+try:
+    options = parser.parse_args()
+except:
+    parser.print_help()
+    sys.exit(0)
+
+args = parser.parse_args()
+print("Importing settings from: ", args.config_file)
+config = args.config_file
+
+
+# Really crude importing
+from mbsystem_config import *
+
+##############################################################
+# Multiprocessing Setup
+##############################################################
 num_cores = multiprocessing.cpu_count() - 2
 if num_cores < 2:
     print("Go buy a new PC")
@@ -143,6 +83,10 @@ if remove_lock_files == 'yes':
 ##############################################################
 if SS_FORMAT not in ["S", "C", "auto", "W", "B"]:
     print("Select correct SS_Format identifier - refer to man mbpreprocess")
+    sys.exit(0)
+
+if SCATTER_WITH_FILTER not in ["yes", "no"]:
+    print("SCATTER_WITH_FILTER must be yes or no. Do it or do it not. There is no try")
     sys.exit(0)
 
 
@@ -350,8 +294,8 @@ def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FOR
         os.system(command)
         if SCATTER_WITH_FILTER =='yes':
             command = './' + file + '_sss_filtered_mbmosaic.cmd '
-        else:
-            print("Hello")
+            os.system(command)
+        if SCATTER_WITH_FILTER =='no':
             command = './' + file + '_sss_mbmosaic.cmd '
             os.system(command)
         return
