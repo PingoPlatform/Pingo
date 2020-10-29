@@ -55,8 +55,6 @@ config = args.config_file
 # Really crude importing
 from mbsystem_config import *
 
-print(PFAD)
-sys.exit(0)
 ##############################################################
 # Multiprocessing Setup
 ##############################################################

@@ -3,13 +3,13 @@
 ##############################################################
 # Control which levels are worked on
 LEVEL1 = 'yes'
-LEVEL2 = 'yes'
-LEVEL3 = 'yes'
+LEVEL2 = 'no'
+LEVEL3 = 'no'
 
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/KH201910/test/'   # end with /
+PFAD = '/Users/peter/IOWDropbox/Projects/ECOMAP/Oderbank/emb205_stx_calib/'   # end with /
 rekursive_directory_search = 'no'
-PREPROCESS = 'no'
+PREPROCESS = 'yes'
 FORMAT = 89  # .ALL UND .S7K FILES  work
 file_end = '.s7k'
 SS_FORMAT = 'C'  # scbw  s snippet c calib. snippet b widebeambackscatter w calibwidebeambackscatter "auto" - no option
@@ -28,7 +28,7 @@ TIDEFILE = ''  #Tidemode set to 2
 CORRECT_DRAFT = 'yes'
 DRAFT_CORR = 3.6
 
-EXPORT_NAV = 'yes'           # Export Navigation information and stores under profile file name
+EXPORT_NAV = 'no'           # Export Navigation information and stores under profile file name
 
 ##############################################################
 # LEVEL 2: Correct Backscatter Data
@@ -46,7 +46,7 @@ SSS_ACROSS_CUT_MAX = 35
 SSS_CORRECTIONS = 'no' #applies all of the follwoing settings
 SSSWATHWIDTH = 160  #that is supposed to e an agnle. I have no clue what happens
 # but settings this to any value removes the beams where the roll claib failed...
-SSINTERPOLATE = 2
+SSINTERPOLATE = 0
 ##############################################################
 # LEVEL 3: Make grid data
 ##############################################################
