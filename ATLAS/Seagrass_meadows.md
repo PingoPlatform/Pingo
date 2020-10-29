@@ -13,11 +13,22 @@ The sample area is from Flensborg to Kiel / Heidkate covering water depths aroun
 Video Transects performed by LLUR (Submaris), visual detections e.g. seagrass on bright sand, stones, overgrown stones. 
 
 ### Biology
+Video Transects performed by LLUR (Submaris), visual detections e.g. seagrass on bright sand, stones, overgrown stones.
 
 ![Ground truthing of CGS facies](img/cgs_bio_01.png)
-*Images from coarse sand and gravel habitat location 40 m north-east from station HD13 recorded in April (A), August (B) and October 2019 (C) showing typical ripple structure, shell debris, low density of lugworm traces, and lack of vegetation and epifauna apart from sporadic drifting algae (ephemeral filamentous algae) and blue mussels.*
+*Images taken during our cruise with RV Littorina June 2019*
 
-## Acoustic/Optical Data
+## Remote Sensing Data
+
+
+### Spaceborne
+Analyses of time-lapse spaceborne images taken in our Study site showed that the visibility through water of the Baltic Sea turned out to be better than expected. Though, we found it to be extremely variable depending on the weather and wind situation some days before the spaceborn picture was taken. E.g. by visual inspection sand bars could be clearly disciminated against areas populated with submerged aquastic vegetation until a water depth of 5m. If groundtruth data is available the dark patches can be mapped to seagrass meadows. A pure spectral discrimination of the seagrass Zostera marina is critical, at least when considering the spectral bands of Sentinel. Nontheless, some meaningful indices from multispectral considerations may be applicable to improve spaceborn mapping from space. How reliable such optical determination of Zostera marina performs on darker substrate with higher mud content remains to be evaluated. 
+With ever increasing improvments in spatial and spectral resolutions resolution modern satellites provide 
+
+### Airborne
+
+### Vessel-born
+
 
 As an exception to the guideline that low frequencies have a higher sensitivity to soft-sediments habitats where at least some volume scatter is present, the coarse-grained features are more clearly observed in high-frequency backscatter mosaics of 550 kHz and 700 kHz (with grain size approaching or exceeding the acoustic wavelength; e.g. station HD12, Table \ref{tab:geolsamples}). In the multispectral map (Figure \ref{fig:HD_freq_comp}), this can be utilized to quickly spot the ecologically valuable areas of coarse sand and gravel (CSG) by their bluish tint. 
 
