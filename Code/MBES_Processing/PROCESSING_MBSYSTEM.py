@@ -560,9 +560,7 @@ if LEVEL2=='yes':
             files = getfiles(ID, '.', 'yes')
         _, files, _ = choose_processed_unprocessed_file(files)
         for mbfile in files:
-            command = "sed -i \"\" \'s/DATACUT*/DATACUT 2 2 -1000  " + str(SSS_ACROSS_CUT_MIN) +"/\' " + mbfile+".par"
-            os.system(command)
-            command = "sed -i \"\" \'s/DATACUT*/DATACUT 2 2 0  " + str(SSS_ACROSS_CUT_MAX) +"/\' " + mbfile+".par"
+            command = "sed -i \"\" \'s/DATACUT*/DATACUT 2 2 -1000  " + str(SSS_ACROSS_CUT_MIN) +" \nDATACUT 2 2 0  " + str(SSS_ACROSS_CUT_MAX) +"/\' " + mbfile+".par"
             os.system(command)
         DATA_TO_PROC = 'yes'
 
@@ -626,6 +624,9 @@ if LEVEL2=='yes':
                 str(FORMAT) + '" | awk \'{print $1" ' + \
                 str(FORMAT) + '"}\' > datalistpp.mb-1'
             os.system(command)
+        print("Writing Basic information for datalist in datalistp.info")
+        command = "mbinfo -F-1 -Idatalistp.mb-1 > datalistp.info"
+        os.system(command)
 
     DATA_TO_PROC = 'no'
 ##############################################################
