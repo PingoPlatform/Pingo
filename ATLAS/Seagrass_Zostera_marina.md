@@ -1,12 +1,35 @@
 
 # Seagrass meadows
+Seagrass meadows are one of the most important habitats on the globe. In the Western Baltic Sea
+the seagrass Zostera marina is reported all over the place near the coast. Its occurence has considerably decreased 
+from 17m water depth to only 8-9m water depth today. Eutriphication, algae growth, and thus light limitations is expected the main reasons. 
+
 
 ## Zostera marina 
 
 
 ## Location
 ![Location of sample area](img/cgs_03.png)
+
 The sample area is from Flensborg to Kiel / Heidkate covering water depths around 5-8m
+
+## Physicochemical behavior and geoacoustic setting
+Zostera marina min. water depth: 1.5m
+Zostera marina max. water depth: 8m
+Zostera marina substrate: sand, silt
+Zostera marina sediment penetration: 0.3m
+Zostera marina canopy height: 1m
+Zostera marina diameter leaf: 1-6mm
+Zostera marina color: green
+Zostera marina season: perannual, predominantly in months 5-11
+
+Can be overgrown with red algae
+Does not like freshwater
+Shoots rise in June
+Can settle on sand and silt of very little thickness
+Some leaves can remain throughout the year
+
+
 
 ## Ground Truthing Data
 ### Geology
@@ -27,9 +50,7 @@ With ever increasing improvments in spatial and spectral resolutions resolution 
 
 ### Airborne
 
-### Vessel-born
-
-
+### Vessel-born acoustic 
 As an exception to the guideline that low frequencies have a higher sensitivity to soft-sediments habitats where at least some volume scatter is present, the coarse-grained features are more clearly observed in high-frequency backscatter mosaics of 550 kHz and 700 kHz (with grain size approaching or exceeding the acoustic wavelength; e.g. station HD12, Table \ref{tab:geolsamples}). In the multispectral map (Figure \ref{fig:HD_freq_comp}), this can be utilized to quickly spot the ecologically valuable areas of coarse sand and gravel (CSG) by their bluish tint. 
 
 ![Example of CGS habtat in multifrequency data](img/cgs_01.png)
