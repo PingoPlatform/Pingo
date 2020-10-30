@@ -38,7 +38,7 @@ The biomass of _P. ulvae_ and _C. glaucum_ increased from spring to autumn, thou
 *Visualisation of differences between Spring and Summer in the Hohe Düne focus area in 2019. The mosaics comprise only two channels (200 kHz, red channel, and 400 kHz, green channel). Note the different appearance of seagrass of different abundance in the backscatter mosaics (medium row), and the appearance of hydrodynamically induced bedforms in facies D (lowermost row).*
 
 ## Repeatable Description of Processing Steps
-The following processing steps for the acoustic data utilize MB-System (https://github.com/dwcaress/MB-System) and the Pysesa Toolbox by Daniel Buscombe (https://dbuscombe-usgs.github.io/pysesa/README.html) and a Python environment (e.g., https://www.anaconda.com) and GMT (https://www.generic-mapping-tools.org). For reproducing the data, please download the following dataset (approx. 60 GB), including a summer-survey with two frequencies of 400 and 700 kHz, from https://www.dropbox.com/sh/80omr76fyo1b1i4/AACEAKTIOkOy-ctEXi8mwCnHa?dl=0. A virtual machine with mbsystem is available at https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 and can be loaded in VirtualBox, however as of today (28.10.2020), the installed mbsystem in the virtual machine is outdated and needs to be updated. 
+The following processing steps for the acoustic data utilize MB-System (https://github.com/dwcaress/MB-System) and the Pysesa Toolbox by Daniel Buscombe (https://dbuscombe-usgs.github.io/pysesa/README.html) and a Python environment (e.g., https://www.anaconda.com), GDAL (https://gdal.org) and GMT (https://www.generic-mapping-tools.org). For reproducing the data, please download the following dataset (approx. 60 GB), including a summer-survey with two frequencies of 400 and 700 kHz, from https://www.dropbox.com/sh/80omr76fyo1b1i4/AACEAKTIOkOy-ctEXi8mwCnHa?dl=0. A virtual machine with mbsystem is available at https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 and can be loaded in VirtualBox, however as of today (28.10.2020), the installed mbsystem in the virtual machine is outdated and needs to be updated. 
 
 ### Reproduce the multispectral grids
 The following steps can be reproduced to repeat the backscatter maps (NOTE: we leave out steps for roll calibration, cleaning of data and sound velocity corrections which affect quality of the bahtymetric data. In the tutorial section of this git, information on how to apply these corrections is available).
@@ -60,7 +60,7 @@ PREPROCESS = 'yes'
 FORMAT = 89  # for s7k files
 file_end = '.s7k'
 SS_FORMAT = 'C'  # C to read field 7058 in s7k. S to read field 7028 
-AREA = '12.10/12.1143/54.1844/54.18997'  # WESN limits of the study site
+AREA = '12.1053/12.11422/54.1844/55.189965'
 GENERATE_DATALIST = 'yes'
 AUTO_CLEAN_BATHY = 'yes'
 ATTITUDE_LAG = ''
@@ -73,7 +73,6 @@ CORRECT_TIDE = ''
 TIDEFILE = '' 
 CORRECT_DRAFT = 'yes'
 DRAFT_CORR = 0.4
-
 EXPORT_NAV = 'no'       
 
 ##############################################################
@@ -107,7 +106,7 @@ GENERATE_SCATTER_GRIDS = 'yes'
 SCATTER_WITH_FILTER ='yes'   #Export filtered grids
 EXPORT_XYI_FROM_GRID = 'no'
 BATHY_RES = '-E1/1'
-SCATTER_RES = '-E0.5/0.5'
+SCATTER_RES = '-E0.25/0.25'
 
 # convert Grids
 UTM_Convert = 'no'
@@ -127,18 +126,21 @@ number_of_exceptions = 0
 Then, execute the file 
 `python PROCESSING_MBSYSTEM.py`
 
-which will generate a .grd file in the 400 kHz folder. Repeat the steps for the 700 kHz folder by adapting the path correspondingly.
+which will generate a sss_grid_filtered.grd file in the 400 kHz folder. Repeat the steps for the 700 kHz folder by adapting the path correspondingly.
 
-To combine the two grids into a multispectral tif, convert the two grid files to grayscale georeferenced tif images. 
+To combine the two grids into a multispectral tif, convert the two grid files to grayscale georeferenced tif images and copy the results in one common folder. 
 
-`gmt grdimage sss_grid.grd -A400.tif -Cgray`
-`gmt grdimage sss_grid.grd -A700.tif -Cgray`
+`gmt grdimage sss_grid_filtered.grd -A400.tif -Cgray`
+`gmt grdimage sss_grid_filtered.grd -A700.tif -Cgray`
 
-These two grids can now be combined to a multispectral image. Note that gmt grdimage requires either one or three input files, so one grid is supplied twice. This does not matter here (but of course has to be kept in mind), as the in GIS the bands to be displayed can be selected.
+These two images can now be combined to a multispectral image using gdal. 
 
-`gmt grdimage sss_grid.grd -HD_multispectral.tif`
+```
+gdalbuildvrt -separate RG.vrt A400.tif A700.tif
+gdal_translate RGB.vrt RG.tif
+```
 
-
+The resulting file can be  loaded into QGIS and should look similar to this:
 
 ## References
 

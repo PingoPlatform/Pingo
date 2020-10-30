@@ -9,19 +9,20 @@ Created on Thu Sep 29 14:01:24 2016
 # Multibeam processing script
 # The calibrated s7k files need a three step approach.
 
+# Parameters are set in the accomapnying file mbsystem_config.py
+# Useage:
+# python PROCESSING_MBSYSTEM.py mbsystem_config.py
 
 ##!!!! The filename of the profile lines MUST NOT END with a p !!!!
 ##!!! No spaces are allowed in the profile names or paths !!!
 
-#todo: scatter grid for dataset auf def umstellen
+#todo scatter grid for dataset auf def umstellen
 #todo implement high pass filter to improve stones
+#todo allow the important of any config file to allow storing survey-configs
+
 #This script is intended to only work on survey level datafiles.
-
-##IOW Archive Structure
-#IOWDROPBOX/Survey_Data/datalist.mb-1  -> all s7k files
-#                       /year/datalist.mb-1 -> all s7k files of one year
-#                            /survey/datalist.mb-1 -> all files of a particular survey
-
+#Do not use recursive datalists, things like mbbackangle and
+#soi on will not handle that when used with this script.
 ##############################################################
 # Preparation
 ##############################################################
@@ -38,18 +39,18 @@ import argparse
 ##############################################################
 # Load Config File
 ##############################################################
-parser = argparse.ArgumentParser()
+#parser = argparse.ArgumentParser()
 #Required Arguments
-parser.add_argument('config_file', type=str, help="Link to File with variables without .py extenstion")
-try:
-    options = parser.parse_args()
-except:
-    parser.print_help()
-    sys.exit(0)
+#parser.add_argument('config_file', type=str, help="Link to File with variables without .py extenstion")
+#try:
+#    options = parser.parse_args()
+#except:
+#    parser.print_help()
+#    sys.exit(0)
 
-args = parser.parse_args()
-print("Importing settings from: ", args.config_file)
-config = args.config_file
+#args = parser.parse_args()
+#print("Importing settings from: ", args.config_file)
+#config = args.config_file
 
 
 # Really crude importing
@@ -67,17 +68,15 @@ print("Using ", num_cores, " cores. ")
 #Pfade
 os.chdir(PFAD)
 
-
+# Delete old lock files
 if remove_lock_files == 'yes':
     print("Trying to remove old lock files:")
-    command = "mbdatalist -F-1 -Idatalist.mb-1 -Y"  # remove prior lock files
+    command = "mbdatalist -F-1 -Idatalist.mb-1 -Y"
     os.system(command)
-    command = "mbdatalist -F-1 -Idatalistp.mb-1 -Y"  # remove prior lock files
+    command = "mbdatalist -F-1 -Idatalistp.mb-1 -Y"
     os.system(command)
     command = "mbdatalist -F-1 -Idatalistpp.mb-1 -Y"
     os.system(command)
-
-
 ##############################################################
 # Sanity checks
 ##############################################################
@@ -88,7 +87,6 @@ if SS_FORMAT not in ["S", "C", "auto", "W", "B"]:
 if SCATTER_WITH_FILTER not in ["yes", "no"]:
     print("SCATTER_WITH_FILTER must be yes or no. Do it or do it not. There is no try")
     sys.exit(0)
-
 
 ##############################################################
 # Functions
@@ -203,10 +201,10 @@ def export_grid_file(SCATTERFILE, TYPE):
 def process_scatter(FORMAT, mbfile, CONSIDER_SEAFLOOR_SLOPE):
     if CONSIDER_SEAFLOOR_SLOPE == 'yes':
         command = 'mbbackangle -I' + mbfile + ' -F' + \
-            str(FORMAT) + ' -P2000 -G2/70/70/50 -N81/80 -R44  -Q '
+            str(FORMAT) + ' -P200 -G2/70/70/50 -N81/80 -R44  -Q '
     else:
         command = 'mbbackangle -I' + mbfile + \
-            ' -F' + str(FORMAT) + ' -G2/70/70/50 -P2000 -R45 -N81/80 '
+            ' -F' + str(FORMAT) + ' -G2/70/70/50 -P200 -R45 -N81/80 '
         os.system(command)
     command = 'mbset -I' + mbfile + ' -F' + str(FORMAT) + ' PSSCORRTYPE: 1'
     os.system(command)
@@ -708,19 +706,16 @@ if LEVEL3 =='yes':
             Parallel(n_jobs=num_cores)(delayed(bathy_grid_file)(mbfile, BATHY_RES, FORMAT)
                                 for mbfile in tqdm(files))
 
-
         if GENERATE_SCATTER_GRIDS =='yes':
             print("Working on files: ", files)
             Parallel(n_jobs=num_cores)(delayed(scatter_grid_file)(mbfile, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FORMAT)
                                     for mbfile in tqdm(files))
-
 
         if EXPORT_BEAM_ANGLE == 'yes':
             for file in files:
                 print('Export Beam Angles for ', file)
                 command = 'mblist -F' + str(FORMAT) + ' -I ' + file + ' -OXYg -MA -K' + str(KFAKTOR) + '>  ' + file + '_ba.xya'
                 os.system(command)
-
 
         if EXPORT_XYI_FROM_GRID == 'yes':
             if SCATTER_WITH_FILTER =='yes':

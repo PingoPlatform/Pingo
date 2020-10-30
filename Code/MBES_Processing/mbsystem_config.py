@@ -6,8 +6,13 @@ LEVEL1 = 'no'
 LEVEL2 = 'no'
 LEVEL3 = 'yes'
 
+####IMPORTANT NOTE
+# To allow for the handling of the mb-system scheme for marking processed files
+# survey lines MUST NOT END with the letter "p"
+####IMPORTANT NOTE
+
 remove_lock_files = 'yes' #Yes tries to remove lockfiles for all files linked in the datalists via mblist
-PFAD = '/Volumes/Work/pingo/400/'   # end with /
+PFAD = '/Volumes/Work/pingo/700/'   # end with /
 rekursive_directory_search = 'no'
 PREPROCESS = 'yes'
 FORMAT = 89  # .ALL UND .S7K FILES  work
@@ -26,7 +31,7 @@ PITCH_CORR = 0.00
 CORRECT_TIDE = ''        #no: removes entries from par fileand reprocesses
 TIDEFILE = ''  #Tidemode set to 2
 CORRECT_DRAFT = 'yes'
-DRAFT_CORR = 3.6
+DRAFT_CORR = 0.4
 
 EXPORT_NAV = 'no'           # Export Navigation information and stores under profile file name
 
@@ -37,7 +42,6 @@ EXPORT_ARC_CURVES = 'no'
 PROCESS_SCATTER = 'yes'  # yes is running mbbackangle
 CONSIDER_SEAFLOOR_SLOPE = ''
 AVERAGE_ANGLE_CORR = 'yes' # backangle correction file specific (no) or average (yes) for complete datesaet
-
 
 SSS_ACROSS_CUT = 'yes'
 SSS_ACROSS_CUT_MIN = -55
@@ -51,7 +55,7 @@ SSINTERPOLATE = 0
 # LEVEL 3: Make grid data
 ##############################################################
 
-SCATTER_FILTER = ''       #low or high - high not implemented atm works on p-files
+SCATTER_FILTER = 'low'       #low or high - high not implemented atm works on p-files
 INTERPOLATION = '-C3/1'      #up to three cells are interpolated
 ## Grids
 WORK_ON_PER_FILE_BASIS = 'no'  # Make grids i.e. for each file individually
@@ -72,7 +76,6 @@ UTM_Convert = 'no'
 ZONE = '-JU'   # in syntax for mbsystem not implemented in mbsystem atm because of using geographical coordinates throughout
 
 #Only for work on a per-file bases
-
 EXPORT_BEAM_ANGLE = 'no'    #
 EXPORT_XYI = 'no'           #
 EXPORT_XYZ = 'no'
