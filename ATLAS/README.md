@@ -16,3 +16,6 @@ This document describes the appearance of a mussel bank located on fine sand in 
 
 ## Shallow reef of glacial lag deposits
 This describes the biological ground truthing and acoustic data recorded over an old glacial sourface in shallow waters of the Baltic Sea. 
+
+## UG_ECOMAP
+This exhaustive report describes the methodology and application of spectral parameters for seafloor classification. 
