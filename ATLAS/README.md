@@ -1,6 +1,6 @@
 # ATLAS
 
-Thils folder shows examples case studies of example habitats in the southern Baltic Sea.
+This folder shows examples case studies of example habitats in the southern Baltic Sea.
 
 ## Coarse sand and gravel 
 Describes the appearance of shallow coarse sand and gravel habitats in shallow waters of the Baltic Sea. 
