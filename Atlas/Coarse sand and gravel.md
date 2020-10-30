@@ -41,7 +41,7 @@ The biomass of _P. ulvae_ and _C. glaucum_ increased from spring to autumn, thou
 The following processing steps for the acoustic data utilize MB-System (https://github.com/dwcaress/MB-System) and the Pysesa Toolbox by Daniel Buscombe (https://dbuscombe-usgs.github.io/pysesa/README.html) and a Python environment (e.g., https://www.anaconda.com), GDAL (https://gdal.org) and GMT (https://www.generic-mapping-tools.org). For reproducing the data, please download the following dataset (approx. 60 GB), including a summer-survey with two frequencies of 400 and 700 kHz, from https://www.dropbox.com/sh/80omr76fyo1b1i4/AACEAKTIOkOy-ctEXi8mwCnHa?dl=0. A virtual machine with mbsystem is available at https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 and can be loaded in VirtualBox, however as of today (28.10.2020), the installed mbsystem in the virtual machine is outdated and needs to be updated. 
 
 ### Reproduce the multispectral grids
-The following steps can be reproduced to repeat the backscatter maps (NOTE: we leave out steps for roll calibration, cleaning of data and sound velocity corrections which affect quality of the bahtymetric data. In the tutorial section of this git, information on how to apply these corrections is available).
+The following steps can be reproduced to repeat the backscatter maps (we leave out steps for roll calibration, cleaning of data. draft settings and sound velocity corrections which affect quality of the bahtymetric data. In the tutorial section of this git, information on how to apply these corrections is available).
 We use the tool PROCESSING_MBSYSTEM.py , which is found in this git under Code/MBES_Processing. To create a mosaic of the 400 kHz data, edit the file mbsystem_config.py to have thefollowing values:
 
 ```
@@ -63,6 +63,7 @@ SS_FORMAT = 'C'  # C to read field 7058 in s7k. S to read field 7028
 AREA = '12.1053/12.11422/54.1844/55.189965'
 GENERATE_DATALIST = 'yes'
 AUTO_CLEAN_BATHY = 'yes'
+auto_clean_with_area_boundaries = 'yes'
 ATTITUDE_LAG = ''
 SELECT_SVP = '' 
 SVP = ''           
@@ -74,7 +75,7 @@ TIDEFILE = ''
 CORRECT_DRAFT = 'yes'
 DRAFT_CORR = 0.4
 EXPORT_NAV = 'no'       
-
+EXPORT_INFO_LEVEL1 = 'no'
 ##############################################################
 # LEVEL 2: Correct Backscatter Data
 ##############################################################
@@ -90,7 +91,7 @@ SSS_ACROSS_CUT_MAX = 20
 SSS_CORRECTIONS = 'yes' 
 SSSWATHWIDTH = 160  
 SSINTERPOLATE = 2
-
+EXPORT_INFO_LEVEL2 = 'no'
 ##############################################################
 # LEVEL 3: Make grid data
 ##############################################################
@@ -139,8 +140,6 @@ These two images can now be combined to a multispectral image using gdal.
 gdalbuildvrt -separate RG.vrt A400.tif A700.tif
 gdal_translate RGB.vrt RG.tif
 ```
-
-The resulting file can be  loaded into QGIS and should look similar to this:
 
 ## References
 

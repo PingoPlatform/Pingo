@@ -265,13 +265,17 @@ def execute_mbcommand(mbcommand):
     os.system(mbcommand)
     return
 
-def autoclean(mbfile, FORMAT):
-        command = 'mbclean -F' + str(FORMAT) + ' -I' + mbfile + ' -R3 -X5 -Q1qq -Z'
-        os.system(command)
+def autoclean(mbfile, FORMAT, autoclean_with_area_boundaries, AREA=''):
+        if auto_clean_with_area_boundaries == 'yes':
+            command = 'mbclean -F' + str(FORMAT) + ' -I' + mbfile + ' -R5 -X3 -Q1 -Z -W'+AREA
+            os.system(command)
+        else:
+            command = 'mbclean -F' + str(FORMAT) + ' -I' + mbfile + ' -R5 -X3 -Q1 -Z'
+            os.system(command)
         return
 
-def bathy_grid_file(file, BATHY_RES, FORMAT):
-    command = 'mbm_grid ' + BATHY_RES + ' -A2 -C2  -G3  ' + ' -F' + \
+def bathy_grid_file(file, BATHY_RES, FORMAT, AREA):
+    command = 'mbm_grid ' + BATHY_RES + ' -A2 -C2  -G3 ' + ' -F' + \
                         str(FORMAT) + ' -I' + file + \
                             ' ' + '-O' + file + '_bath'
     os.system(command)
@@ -279,7 +283,7 @@ def bathy_grid_file(file, BATHY_RES, FORMAT):
     os.system(command)
     return
 
-def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FORMAT):
+def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FORMAT, AREA):
         name_add = ''
         print('Generate Scatter Grid for file:', file )
         datatype = '-A4'
@@ -288,7 +292,7 @@ def scatter_grid_file(file, SCATTER_WITH_FILTER, SCATTER_RES, INTERPOLATION, FOR
             datatype = '-A4F'
             name_add = '_filtered'
         # Generate first cut sidescan mosaic and plot
-        command = 'mbm_grid ' + datatype + ' -M -Y1 -P0 -G3  ' + ' ' +  SCATTER_RES + ' ' + INTERPOLATION + ' -F' + str(FORMAT) + ' -I' +file + ' ' + '-O' + file +'_sss' + name_add
+        command = 'mbm_grid ' + datatype + ' -M -Y1 -P0 -G3'  + ' ' +  SCATTER_RES + ' ' + INTERPOLATION + ' -F' + str(FORMAT) + ' -I' +file + ' ' + '-O' + file +'_sss' + name_add
         os.system(command)
         if SCATTER_WITH_FILTER =='yes':
             command = './' + file + '_sss_filtered_mbmosaic.cmd '
@@ -357,7 +361,7 @@ if LEVEL1 == 'yes':
             files = getfiles(ID, '.', 'yes')
         files, _, _ = choose_processed_unprocessed_file(files)
         print("Autoclean")
-        Parallel(n_jobs=num_cores)(delayed(autoclean)(mbfile, FORMAT)
+        Parallel(n_jobs=num_cores)(delayed(autoclean)(mbfile, FORMAT, auto_clean_with_area_boundaries, AREA)
                                 for mbfile in tqdm(files))
         DATA_TO_PROC = 'yes'
 
@@ -488,10 +492,10 @@ if LEVEL1 == 'yes':
                         str(FORMAT) + '" | awk \'{print $1" ' + \
                             str(FORMAT) + '"}\' > datalistp.mb-1'
             os.system(command)
-
-        print("Writing Basic information for datalist in datalist.info")
-        command = "mbinfo -F-1 -Idatalist.mb-1 > datalist.info"
-        os.system(command)
+        if EXPORT_INFO_LEVEL1 == 'yes':
+            print("Writing Basic information for datalist in datalist.info")
+            command = "mbinfo -F-1 -Idatalist.mb-1 > datalist.info"
+            os.system(command)
     DATA_TO_PROC = 'no'
 
 ##############################################################
@@ -558,7 +562,7 @@ if LEVEL2=='yes':
             files = getfiles(ID, '.', 'yes')
         _, files, _ = choose_processed_unprocessed_file(files)
         for mbfile in files:
-            command = "sed -i \"\" \'s/DATACUT*/DATACUT 2 2 -1000  " + str(SSS_ACROSS_CUT_MIN) +" \nDATACUT 2 2 0  " + str(SSS_ACROSS_CUT_MAX) +"/\' " + mbfile+".par"
+            command = "sed -i \"\" \'s/DATACUT*/DATACUT 2 2 -1000  " + str(SSS_ACROSS_CUT_MIN) +" \\nDATACUT 2 2 0  " + str(SSS_ACROSS_CUT_MAX) +"/\' " + mbfile+".par"
             os.system(command)
         DATA_TO_PROC = 'yes'
 
@@ -622,9 +626,11 @@ if LEVEL2=='yes':
                 str(FORMAT) + '" | awk \'{print $1" ' + \
                 str(FORMAT) + '"}\' > datalistpp.mb-1'
             os.system(command)
-        print("Writing Basic information for datalist in datalistp.info")
-        command = "mbinfo -F-1 -Idatalistp.mb-1 > datalistp.info"
-        os.system(command)
+        if EXPORT_INFO_LEVEL2 == 'yes':
+            print("Writing Basic information for datalist in datalistp.info")
+            command = "mbinfo -F-1 -Idatalistp.mb-1 > datalistp.info"
+            os.system(command)
+
 
     DATA_TO_PROC = 'no'
 ##############################################################
