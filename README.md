@@ -1,15 +1,8 @@
-# Pingo_Beta
-The Beta of the all-powerful Pingo platform
-
-
-Once availanle, the repository will be moved to the CAU hosted git. 
-
-
+# Pingo - Collection of Code, Tutorials and Case studies for Marine Habitat Mapping
 
 
 ![Metods](OverviewMethods.jpg)
 
-On the challenge of surveysing the shallow water...
 
-
+This git is funded by:
 ![ECOMAP](ECOMAP_Logo.png)
