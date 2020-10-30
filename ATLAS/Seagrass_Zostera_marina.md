@@ -13,7 +13,7 @@ from 17m water depth to only 8-9m water depth today. Eutriphication, algae growt
 
 The sample area is from Flensborg to Kiel / Heidkate covering water depths around 5-8m
 
-## Physicochemical behavior and geoacoustic setting
+## Geo-bio opto-acoustic setting
 Zostera marina min. water depth: 1.5m
 Zostera marina max. water depth: 8m
 Zostera marina substrate: sand, silt
@@ -23,11 +23,15 @@ Zostera marina diameter leaf: 1-6mm
 Zostera marina color: green
 Zostera marina season: perannual, predominantly in months 5-11
 
+Has void spaces for buyoncy in leaves
+Can produce oxygen, possibly free gas phase
 Can be overgrown with red algae
 Does not like freshwater
 Shoots rise in June
 Can settle on sand and silt of very little thickness
 Some leaves can remain throughout the year
+Can migrate 0.1/y through rhizomes
+Can sexually reproduce and spread seeds 
 
 
 
