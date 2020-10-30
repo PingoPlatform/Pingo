@@ -1,2 +1,2 @@
 # Pingo_Beta
-This foldr includes codes and small tools that can be used for research.
+This folder includes code and small tools that we use for our actual research. This is always in flux and not always properly documented. 
