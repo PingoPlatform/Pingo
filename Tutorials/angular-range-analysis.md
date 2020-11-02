@@ -12,18 +12,20 @@ Angular range analysis (ARA) utilizes the decrease of backscatter intensities wi
 
 We use a 400 kHz file recorded offshore Rostock (Germany) in a shallow part of the Baltic Sea. No correction regarding erroneous data, patch test or draft are done for the purpose of this chapter. We will only use the single line, and not the complete mosaic, to speed up the processing. The procedure would work identically with the datalist of the complete mosaic, feel free to try that if you are interested. While the aim using mbbackangle was to get rid of angular relationships for the creation of backscatter mosaics, here we want to utilize the relationship for seafloor classification.
 
+The file 20191017_090105_kh1910_400khz.mb89 used here can be downloaded ffrom the following folder: https://www.dropbox.com/sh/yfk0as0bw4790s1/AADdPWMtKRC-Yh06xXX8oTjsa?dl=0 . Copy the file in the ./data folder of this git folder. 
+
 First, we do the preprocessing of the file to load it into mbsystem:
 
 ```text
-mbpreprocess --format=89 --input=./data/20191017_091850_kh1910_400khz.s7k --multibeam-sidescan-source=C 
+mbpreprocess --format=89 --input=./data/20191017_091850_kh1910_400khz.s7k --multibeam-sidescan-source=S 
 ```
 
-Note the file contains a field with calibrated snippet information (field 7058 in a Reson s7k files, the same fields are supported in other Software such as FMGT or SonarWiz during import), therefore we set the side scan source to "C". 
+Note the file contains a field with calibrated snippet information (field 7058 in a Reson s7k files, the same fields are supported in other Software such as FMGT or SonarWiz during import), if we set the side scan source to "C". For this tutorial, we use the more commonyl available field 7028, which is imported with the switch "S".
 
 Here, we do not do any further correction and export the data we require for the ARC curvces
 
 ```text
-mblist -NA -OXYNCd#.lb -F89 -I./data/20191017_091850_kh1910_400khz.s7k  > 20191017_091850_kh1910_400khz.arc
+mblist -MA -OXYNCd#.lBg -F89 -I./data/20191017_091850_kh1910_400khz.s7k  > 20191017_091850_kh1910_400khz.arc
 ```
 
 This mblist option exports the coordinates, the ping count, the transducer height, the across track distance, the beam number, the pulse lengths and the backscatter values to a file with the ending .arc. Note that to my knowledge it is not possible to directly export angles for snippet-derived sidescan data with mbsystem, nor is it possible to export the frequency for s7k information. This will complicate our postprocessing a bit. 
@@ -46,7 +48,7 @@ import matplotlib.pyplot as plt
 Load the raw data we exported to the ASCII file into the pandas dataframe df\_raw.
 
 ```text
-df_raw = pd.read_csv('./data/20191017_091850_kh1910_400khz.arc', columns = ['X', 'Y', 'Ping', 'Height', 'AcrossDist', 'PulseLength', 'BS'])
+df_raw = pd.read_csv('test.arc', names = ['X', 'Y', 'Ping', 'Height', 'Across_Dist', 'Beam', 'PulseLength', 'BS', 'Angle'], sep = '\t')
 ```
 
 Lets plot the first 1000 data points. The method .iloc references the rows of a pandas dataframe. Note that indices and array in Python are enclosed in \[ \], while parameters for functions are specified within \( \).
@@ -54,37 +56,39 @@ Lets plot the first 1000 data points. The method .iloc references the rows of a 
 ```text
 df_raw.iloc[0:20000].plot.scatter(x='Angle', y='BS')
 ```
+![](./img/arc_1.png)
 
-![](./img/image%20%2812%29.png)
+Some variance in the curves is apparent as well as some outliers. We will not try to correct or remove bad pings at all, can have a noticeable effect later on. Normally, considerable effort should go into cleaning the multibeam data.
 
-Some variance in the curves is apparent as well as some outliers. We will not try to correct or remove bad pings at all, which will have a noticeable effect later on. Normally, considerable effort should go into data cleaning.
-
-Repeat the procedure, plot and explain the Angle - Intensity plot for the backscatter data processed with mbbackangle. Name the dataframe df\_proc. Do we continue with the raw or processed data?
+If interested: Follow the tutorial in the creation of backscatter mosaics, and plot the points for a datafile processed after mbbackangle was used. Name the dataframe df\_proc. Do we continue with the raw or processed data for angular response analysis?
 
 ### Parameterize the data and apply the sonar equation
 
 Before we can use the ARA curves for plotting, the data needs to be parameterized. A suitable choice for that purpose is the GSAB model \(Lamarche et al., 2011; [https://www.researchgate.net/publication/222161889\_Quantitative\_characterisation\_of\_seafloor\_substrate\_and\_bedforms\_using\_advanced\_processing\_of\_multibeam\_backscatter-Application\_to\_Cook\_Strait\_New\_Zealand](https://www.researchgate.net/publication/222161889_Quantitative_characterisation_of_seafloor_substrate_and_bedforms_using_advanced_processing_of_multibeam_backscatter-Application_to_Cook_Strait_New_Zealand)\)
 
-Since we already have the ARA curves in a pandas dataframe, application of the model is comparatively straightforward. The tasks involve fitting the raw data to a curve function \(see caption of above figure\) given by the GSAB model and then calculating the parameters A to F. This needs to be done for every or a small number of pings, otherwise we would calculate the average over larger areas. Fortunately, we already exported a PingCount variable with mblist and loaded it into the dataframe. Also, we need to convert the linear intensity data to decibels.
+Since we already have the ARA curves in a pandas dataframe, application of the model is comparatively straightforward. The tasks involve fitting the raw data to a curve function given by the GSAB model and then calculating the parameters A to F. This needs to be done for every or a small number of pings, otherwise we would calculate the average over larger areas. Fortunately, we already exported a PingCount variable with mblist and loaded it into the dataframe. Also, we need to convert the linear intensity data to decibels.
 
-For the next operations, we prepared some custom functions that are located in the ecomap\_summerschool/python\_functions folder. The functions are also listed in the Appendix. Feel free to have a look. We load these functions by using:
-
+For the next operations, we prepared some custom functions.
 ```text
-import sys
-sys.path.append('/home/ecomap/ecomap_summerschool/python_functions')
-import ecomap_summerschool_functions as eco
+
+
+
+
+
 ```
+
 
 Now we convert the linear amplitude to dB values, which we store in a new column of the dataframe. We get a lot of -inf values due to many 0-intensity data points. We will remove these points as well as missing datapoints from our dataset. Take a moment to understand the logic and syntax in the command.
 
 ```text
 #Make new column in dataframe for dB values
-df_raw['Intensity_dB'] = eco.calculate_db(df_raw['Intensity'])
+df_raw['BS_dB'] = 20 * np.log10(df_raw['BS'])
+
 #Remove the -infs caused by log(0) with 0
 df_raw.drop(df_raw[df_raw.isin([np.nan, np.inf, -np.inf]).any(1)].index, inplace = True)
 ```
 
-Calibrated high-frequency backscatter data typically shows intensities between -70 and 10 dB depending on angle and seafloor. Our data here is uncalibrated and should be corrected according to the sonar equation as far as possible. The \(incomplete\) sonar equation is given with: TS = EL - SL + 2\*TL with TS: target strength, EL: echo level, SL: source level, and TL: transmission loss. The transmission loss TL is:
+Calibrated high-frequency backscatter data typically shows intensities between -70 and 0 dB depending on angle and seafloor. Our data here is uncalibrated and should be corrected according to the sonar equation as far as possible. The \(incomplete\) sonar equation is given with: TS = EL - SL + 2\*TL with TS: target strength, EL: echo level, SL: source level, and TL: transmission loss. The transmission loss TL is:
 
 TL = Spreading + Absorption
 
