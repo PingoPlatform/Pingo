@@ -15,10 +15,24 @@ Results from HAPS cores at 4 sampling stations (EMB205-10, 11, 16, 17) show a ho
 
 
 ### Biology
+According to HUB classification of Benthic habitats at Level 3, the entire area is “coarse sediment and sand”, and most of it is classified as 
+AB-J3L9 Baltic aphotic sand dominated by multiple infaunal bivalve species: Cerastoderma spp., Mya arenaria, Astarte borealis, Arctica islandica, Macoma balthica.
+
 ![Location of sample area](img/bio_abundance.png)
+*Abundance and biomass of dominant species at each sampling site. Species contributing to over 96% of total abundance and 98% of total wet weight biomass are shown.*
+
+![Location of sample area](img/bio_mds.png)
+*Ordination of Bray-Curtis similarities in coverage data.*
+
+![Location of sample area](img/bio_videostills.png)
+*Exemplary UW photos of two major groups (resulting from Hierarchical Cluster and Non-metric Multi-Dimensional Scaling analysis based on coverage data; significance of differences between groups in confirmed by ANOSIM).*
+
+Group c is characterised by relatively high coverage by unattached mussel clusters.
+Sand was observed in images of Group d with average coverage over 60 %, indicating infauna-dominated habitat.
 
 ## Acoustic/Optical Data
-![Location of sample area](img/bio_videostills.png)
+
+
 
 ![Location of sample area](img/backscatter_all_400plus.png)
 
