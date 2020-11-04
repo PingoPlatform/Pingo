@@ -21,8 +21,10 @@ AB-J3L9 Baltic aphotic sand dominated by multiple infaunal bivalve species: Cera
 ![Location of sample area](img/bio_abundance.png)
 *Abundance and biomass of dominant species at each sampling site. Species contributing to over 96% of total abundance and 98% of total wet weight biomass are shown.*
 
-![Location of sample area](img/bio_mds.png)
+
+![Location of sample area](img/bio_mds.png = 250x)
 *Ordination of Bray-Curtis similarities in coverage data.*
+
 
 ![Location of sample area](img/bio_videostills.png)
 *Exemplary UW photos of two major groups (resulting from Hierarchical Cluster and Non-metric Multi-Dimensional Scaling analysis based on coverage data; significance of differences between groups in confirmed by ANOSIM).*
