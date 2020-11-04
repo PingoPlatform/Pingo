@@ -15,11 +15,12 @@ Results from HAPS cores at 4 sampling stations (EMB205-10, 11, 16, 17) show a ho
 
 
 ### Biology
-
+![Location of sample area](img/bio_abundance.png)
 
 ## Acoustic/Optical Data
+![Location of sample area](img/bio_videostills.png)
 
-
+![Location of sample area](img/backscatter all_400plus.png)
 
 ## Seasonality
 
