@@ -4,5 +4,5 @@
 ![Metods](OverviewMethods.jpg)
 
 
-This git is funded by:
+
 ![ECOMAP](ECOMAP_Logo.png)
