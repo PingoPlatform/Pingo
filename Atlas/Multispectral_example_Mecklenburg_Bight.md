@@ -4,7 +4,7 @@
 This is an example of a multi-spectral backscatter survey running from nearcoastal sands, above glacial lag deposits into central Mecklenburg Bight. 
 
 
-![Mecklenburg Bight 1](./img/Mecklenburg_Bight_MFreq.png)
+![Mecklenburg Bight 1](./img/Mecklenburg_Bight_MFreq_1.png)
 
 
 
