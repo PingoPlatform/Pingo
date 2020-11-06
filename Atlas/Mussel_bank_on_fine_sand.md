@@ -8,10 +8,10 @@ The examplary mussel banks on fine sand occur in the Pomeranian Bay/Southern Bal
 
 ## Ground Truthing Data
 ### Geology
-Results from HAPS cores at 4 sampling stations (EMB205-10, 11, 16, 17) show a homogeneous grain size distribution, in the range of fine to medium sand. No lateral variations appear, but horizontally, an increased amount of shell fragments occurs in depth greater than 8 cm, especially at stations EMB205-10. Generally, the seafloor surface is characterized by small sand ripples and very similar at all sampling stations.
+Results from HAPS cores at 4 sampling stations (EMB205-10, 11, 16, 17) show a homogeneous grain size distribution, in the range of fine to medium sand. No lateral variations appear, but vertically, an increased amount of shell fragments occurs in depth greater than 8 cm, especially at stations EMB205-10. Generally, the seafloor surface is characterized by small sand ripples and very similar at all sampling stations.
 
 ### Biology
-According to HUB (HELCOM Undewater biotope and habitat classification system) classification of Benthic habitats at Level 3, the entire area is “coarse sediment and sand”, and most of it is classified as AB-J3L9 Baltic aphotic sand dominated by multiple infaunal bivalve species (Schiele et al., 2015). 
+Macrofaunal assemblage structures is often explored in terms of the species richness, abundance, biomass and diversity. To integrate functionality, bioturbation potential of macrofaunal assemblages can also be considered (as bioturbation has significant implication on the biogeochemical fluxes of marine sediments). Presence of benthic organisms and bioturbation can also cause changes in natural interface roughness, in turn, next to sediment composition and hydrodynamic forces, having impact on backscatter data (Schönke et al., 2019; Briggs et al., 2001).
 
 
 ![Location of sample area](img/bio_abundance.png)
@@ -27,23 +27,32 @@ According to HUB (HELCOM Undewater biotope and habitat classification system) cl
 
 Group c is characterised by relatively high coverage by unattached mussel clusters. However, at observed images colony size does not exceed first few cm and is barely visible, exhibiting very low coverage (a maximum of 4% in our data). Sand was observed in images of Group d with average coverage over 60 %, indicating infauna-dominated habitat.
 
+According to HUB (HELCOM Undewater biotope and habitat classification system) classification of Benthic habitats at Level 3, the entire area is “coarse sediment and sand”, and most of it is classified as AB-J3L9 Baltic aphotic sand dominated by multiple infaunal bivalve species (Schiele et al., 2015). 
+
+
 ## Acoustic/Optical Data
 
 Parallel stripes of high-backscatter strength appear in the central part of the investigation area with a very regular spacing of ~50 m. The stripes are oriented in NW-SE direction. The increase of backscatter intensity to the surrounding seafloor is similar in all four considered frequencies (200, 400, 550, and 700 kHz).
 
 
-![Location of sample area](img/backscatter_all_400plus.png)
+The utilized towed video sledge was used for ground-truthing. It is equipped with a downward-looking camera system to record high-resolution photos and videos (Beisiegel et al., 2018). To determine the percentage of mussel covered areas in a higher resolution (one image per second), a channel of each image was clustered, and after the application of dilation and erosion algorithms, a color intensity threshold divides the images' pixels in mussel and sand.
 
-## Seasonality
+![Location of sample area](img/mussel_cov.png)
 
 
 ## Repeatable Description of Processing Steps
 
-## Example Data
+Refer to the file "Coarse sand and gravel.md", where the processing steps of the acoustic data are given.
 
 ## References
 
+Beisiegel, K., Darr, A., Zettler, M. L., Friedland, R., Gräwe, U., & Gogina, M. (2018). Understanding the spatial distribution of subtidal reef assemblages in the southern Baltic Sea using towed camera platform imagery. Estuarine, Coastal and Shelf Science, 207, 82-92.
+
+Briggs, K.B.; Williams, K.L.; Richardson, M.D.; Jackson, D.R. E_ects of Changing Roughness on Acoustic Scattering: (1) Natural Changes. Proc. Inst. Acoust. 2001, 23, 343–390.
+
 Schiele, K. S., Darr, A., Zettler, M. L., Friedland, R., Tauber, F., von Weber, M., & Voss, J. (2015). Biotope map of the german baltic sea. Marine Pollution Bulletin, 96(1-2), 127-135.
+
+Schönke M, Wiesenberg L, Schulze I, Wilken D, Darr A, Papenmeier S, Feldens P, 2019. Impact of Sparse Benthic Life on Seafloor Roughness and High-Frequency Acoustic Scatter. Geosciences 2019, 9, 454; doi:10.3390/geosciences9100454
 
 Tauber, F. Meeresbodensedimente in der deutschen Ostsee= Seabed sediments in the German Baltic Sea. BSH, Bundesamt für Seeschifffahrt und Hydrographie 2012.
 
