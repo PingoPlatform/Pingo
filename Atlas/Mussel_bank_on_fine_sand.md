@@ -2,7 +2,7 @@
 
 ## Location
 
-![Location of sample area](img/oderbank_overview.png)
+![Location of sample area](img/oderbank_overview3.png)
 
 The examplary mussel banks on fine sand occur in the Pomeranian Bay/Southern Baltic Sea, southwest to the prominent morphological feature of the Oder Bank. The area is relatively flat, with water depth around 14 to 16 m.
 
