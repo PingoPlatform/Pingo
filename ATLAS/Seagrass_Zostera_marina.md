@@ -55,18 +55,9 @@ With ever increasing improvments in spatial and spectral resolutions resolution 
 ### Airborne
 
 ### Vessel-born acoustic 
-As an exception to the guideline that low frequencies have a higher sensitivity to soft-sediments habitats where at least some volume scatter is present, the coarse-grained features are more clearly observed in high-frequency backscatter mosaics of 550 kHz and 700 kHz (with grain size approaching or exceeding the acoustic wavelength; e.g. station HD12, Table \ref{tab:geolsamples}). In the multispectral map (Figure \ref{fig:HD_freq_comp}), this can be utilized to quickly spot the ecologically valuable areas of coarse sand and gravel (CSG) by their bluish tint. 
-
-![Example of CGS habtat in multifrequency data](img/cgs_01.png)
-*Detail of the multifrequency image of a CSG facies, with two example underwater snapshots for finer sand and coarser gravel areas, respectively. Note the blue appearance of the coarse gravel material in the acoustic data, representing a relatively higher sensitivity to high frequencies.*
 
 ## Seasonality
 
-![Saisonality in CGS habitat](img/cgs_bio_02.png)
-*Seasonal changes in the biomass [FM mg/m$^2$]of selected benthic macrofauna species at stations attributed to CSG habitat. Different colours correspond to different seasons*
-
-![Example of CGS habtat in multifrequency data](img/cgs_02.png)
-*Visualisation of differences between Spring and Summer in the Hohe Düne focus area in 2019. The mosaics comprise only two channels (200 kHz, red channel, and 400 kHz, green channel). Note the different appearance of seagrass of different abundance in the backscatter mosaics (medium row), and the appearance of hydrodynamically induced bedforms in facies D (lowermost row).*
 
 ## Repeatable Description of Processing Steps
 
