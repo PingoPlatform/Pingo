@@ -1,19 +1,19 @@
 
-# Seagrass meadows
+# Seagrass meadows Baltic Sea
 Seagrass meadows are one of the most important habitats on the globe. In the Western Baltic Sea
 the seagrass Zostera marina is reported all over the place near the coast. Its occurence has considerably decreased 
-from 17m water depth to only 8-9m water depth today. Eutriphication, algae growth, and thus light limitations is expected the main reasons. 
+from 17 m water depth to only 8-9 m water depth today. Eutriphication, algae growth, and thus light limitations is expected the main reasons. 
 
 
 ## Zostera marina 
-
-
-## Location
-![Location of sample area](img/cgs_03.png)
-
 The sample area is from Flensborg to Kiel / Heidkate covering water depths around 5-8m
 
-## Geo-bio opto-acoustic setting
+## Raw data multibeam snippets data pattern
+![Seagrass anomalies in MBES raw bathymetry and snippet backscatter](img/seagrass_raw.png)
+
+
+
+## Geo-bioacoustic and/or opto-bio properties
 Zostera marina min. water depth: 1.5m
 Zostera marina max. water depth: 8m
 Zostera marina substrate: sand, silt
@@ -42,7 +42,7 @@ Video Transects performed by LLUR (Submaris), visual detections e.g. seagrass on
 ### Biology
 Video Transects performed by LLUR (Submaris), visual detections e.g. seagrass on bright sand, stones, overgrown stones.
 
-![Ground truthing of CGS facies](img/cgs_bio_01.png)
+![Ground truthing of CGS facies](img/)
 *Images taken during our cruise with RV Littorina June 2019*
 
 ## Remote Sensing Data
@@ -71,6 +71,7 @@ As an exception to the guideline that low frequencies have a higher sensitivity 
 ## Repeatable Description of Processing Steps
 
 ## Example Data
+
 
 ## References
 
