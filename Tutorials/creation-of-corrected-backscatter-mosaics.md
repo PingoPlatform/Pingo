@@ -6,6 +6,8 @@ description: 'Author: Peter Feldens'
 
 ## `Processing of a single line`
 
+This example uses a virtual machine, which can be downlaoded here https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 . It can be opened using the open source tool Virtual Box (https://www.virtualbox.org). Please note that the installed version of mbsystem is out of date. While it works with this tutorial, it shoudl definitely be updated to the most recent version.  
+
 Our first task is to process the backscatter information stored within modern multibeam echo sounder datafiles. For this task we will use mbsystem \(Caress and Chayes, 1995; [https://www.mbari.org/products/research-software/mb-system/](https://www.mbari.org/products/research-software/mb-system/)\).
 
 Locate the /home/ecomap/ecomap\_summerschool/mbsystem\_backscatter/200 folder. Inside, a .HSX data file recorded in the North Sea using a Norbit multibeam echo sounder is located. We prepare the file for use in mbsystem and generate datalists referencing the individual data files, similar to the process used during processing of bathymetric data.
@@ -38,7 +40,7 @@ mbm_plot -F-1 -Idatalist.mb-1 -G5 -Osidescan_raw -S
 ./sidescan_raw.cmd     #This command will not be repeated in the future
 ```
 
-![](../.gitbook/assets/image.png)
+![](img/image.png)
 
 It can clearly be observed that the the angular relationship has not been accurately removed and there is little contrast. It is possible to visualize and correct the angular relationship by mbbackangle, the program used to process backscatter data within mbsystem. Mbbackangle forces a flat incidence angle/intensity relationship, with intensities normalized to a reference angle. In this case we consider 121 angle intervals \(an odd number, so the correction is symmetric around 0\), ranging from -82° to 82° incidence angle, with 40° used as a reference angle. You can have a look at the manpage to figure out what the options of mbbackangle do exactly \(man mbbackangle\) and how the correction is applied.
 
@@ -70,7 +72,7 @@ We can plot the processed data
 
 `mbm_plot -F-1 -Idatalistp.mb-1 -G5F -Osidescan_proc -S`
 
-![](../.gitbook/assets/image%20%2810%29.png)
+![](img/image%20%2810%29.png)
 
 Finally, similar to bathymetric, backscsatter data can be gridded mbm\_grid, which creates grid files of the backscatter data which is often more convenient for further processing than image formats. The -E option control the grids resolution in meters. -A4F specifies to use filtered side scan data. However, some useful options are better explained on the mbmosaic manpage \(e.g, -A6 - plotting the grazing angle; -Y1 – setting priorities to angles away from the nadir\), so have a look here for the possibilities. Mbgrdviz - a graphical program of mbsystem - can be used to visualize the grids files, but they can also be loaded in GMT scripts, for example.
 
@@ -82,7 +84,7 @@ mbgrdviz
 
 ```
 
-![](../.gitbook/assets/image%20%286%29.png)
+![](img/image%20%286%29.png)
 
 You can create a GeoTif using mbm\_grdtiff, e.g., for loading the data into GIS systems. The simplest option is
 
@@ -104,7 +106,7 @@ Repeat the procedure for the files surveyed with an acoustic frequency of 400 kH
 
 The result should look similar to this \(these are unfiltered grid files\), which is not perfect, but ok for now.
 
-![](../.gitbook/assets/image%20%284%29.png)
+![](img/image%20%284%29.png)
 
 ### Impact of frequency
 

@@ -6,7 +6,7 @@ description: 'Author: Peter Feldens'
 
 ## Texture Analysis
 
-We use the Virtual machine provided in the "Links to data" chapter. 
+This example uses a virtual machine, which can be downlaoded here https://www.dropbox.com/s/zv67hq1jqwzaoxc/summerschool_v2.ova?dl=0 . It can be opened using the open source tool Virtual Box (https://www.virtualbox.org). Please note that the installed version of mbsystem is out of date. While it works with this tutorial, it shoudl definitely be updated to the most recent version.  
 
 For texture analysis, we will keep things simpler and just classify different subsets of a side scan sonar mosaic using the inbuild functions of Python’s scikit-image module, which offers several functions for image classification.
 
@@ -44,11 +44,11 @@ plt.imshow(stone)
 plt.imshow(sediment)
 ```
 
-![](../.gitbook/assets/image%20%285%29.png)
+![](img//image%20%285%29.png)
 
-![](../.gitbook/assets/image%20%288%29.png)
+![](img/image%20%288%29.png)
 
-![](../.gitbook/assets/image%20%289%29.png)
+![](img/image%20%289%29.png)
 
 The differences in spatial pixel arrangement are obvious. Let us calculate the texture parameters. 
 
