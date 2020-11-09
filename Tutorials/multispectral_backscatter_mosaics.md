@@ -108,3 +108,8 @@ These two images can now be combined to a multispectral image using gdal.
 gdalbuildvrt -separate RG.vrt A400.tif A700.tif
 gdal_translate RGB.vrt RG.tif
 ```
+![Multifreq1](img/multifreq_1.png)
+_Example of a multspectral images in the North, plotted with a dynamic range of 10dB. Note the different snesitivites to small changes in the different frequencies, and the higher relative backscatter intensitiy of coarse material surrounding a sorted bedforms in high frequencies_
+
+![Multifreq1](img/multifreq_2.png)
+_Example of a seafloor patch showing higher backscatter intensity compared to its surroundings in low frequenciey, and reduced intensity at high frequency._
